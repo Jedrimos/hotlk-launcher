@@ -1,11 +1,11 @@
 {
   "name": "hotlk-launcher",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Launcher für Home of the Lich King",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win portable --publish never"
+    "dist": "electron-builder --win nsis --publish never"
   },
   "devDependencies": {
     "electron": "33.2.1",
@@ -23,18 +23,38 @@
     },
     "win": {
       "target": [
-        "portable"
+        "nsis"
       ],
       "icon": "build/icon.ico"
     },
-    "portable": {
-      "artifactName": "HomeOfTheLichKing-Launcher.exe"
-    }
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowElevation": false,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "HomeOfTheLichKing-Setup-${version}.exe",
+      "shortcutName": "Home of the Lich King",
+      "runAfterFinish": true
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Jedrimos",
+        "repo": "hotlk-launcher"
+      }
+    ],
+    "electronLanguages": [
+      "de",
+      "en-US"
+    ]
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Jedrimos/hotlk-launcher.git"
   },
   "author": "Jedrimos",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "electron-updater": "6.3.9"
+  }
 }

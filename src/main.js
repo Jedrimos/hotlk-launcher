@@ -446,25 +446,18 @@ ipcMain.handle('admin:run', async (_e, action, data) => {
 ipcMain.handle('launcher:update', async () => {
   const v = await getVersionJson();
   if (!isNewer(v.version, app.getVersion())) throw new Error('Du hast schon die neueste Version.');
-  const target = process.env.PORTABLE_EXECUTABLE_FILE;
-  const url = v.exe || (cfg.siteUrl + 'download/files/HomeOfTheLichKing-Launcher.exe');
-  if (!target || process.platform !== 'win32') { shell.openExternal(v.url || url); throw new Error('Automatisches Update geht nur mit der fertigen .exe. Download im Browser geöffnet.'); }
-  const tmp = target + '.new';
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Download fehlgeschlagen: HTTP ' + res.status);
-  const total = +res.headers.get('content-length') || 0;
-  const out = fs.createWriteStream(tmp); const rd = res.body.getReader(); let done = 0; const h = require('crypto').createHash('sha256');
-  for (;;) {
-    const { done: fin, value } = await rd.read(); if (fin) break;
-    h.update(value); if (!out.write(value)) await new Promise((r) => out.once('drain', r));
-    done += value.length; win.webContents.send('update:progress', { done, total });
-  }
-  await new Promise((r) => out.end(r));
-  if (v.sha256 && h.digest('hex') !== String(v.sha256).toLowerCase()) { fs.rmSync(tmp, { force: true }); throw new Error('Prüfsumme der neuen Version stimmt nicht.'); }
-  const bat = path.join(app.getPath('temp'), 'hotlk-update.cmd');
-  fs.writeFileSync(bat, `@echo off\r\nping 127.0.0.1 -n 4 >nul\r\n:retry\r\nmove /y "${tmp}" "${target}" >nul 2>&1\r\nif errorlevel 1 (ping 127.0.0.1 -n 2 >nul & goto retry)\r\nstart "" "${target}"\r\ndel "%~f0"\r\n`);
-  spawn('cmd.exe', ['/c', bat], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
-  app.exit(0);
+  if (!app.isPackaged || process.env.PORTABLE_EXECUTABLE_FILE) { shell.openExternal(v.url || cfg.siteUrl + 'download/'); throw new Error('Automatisches Update geht nur mit dem installierten Launcher. Download im Browser geöffnet.'); }
+  const { autoUpdater } = require('electron-updater');
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = false;
+  autoUpdater.removeAllListeners('download-progress');
+  autoUpdater.on('download-progress', (p) => { if (win && !win.isDestroyed()) win.webContents.send('update:progress', { done: p.transferred, total: p.total }); });
+  const r = await autoUpdater.checkForUpdates();
+  if (!r || !r.updateInfo || !isNewer(r.updateInfo.version, app.getVersion())) throw new Error('Das Update ist noch nicht bereit. Bitte in ein paar Minuten erneut versuchen.');
+  await autoUpdater.downloadUpdate();
+  L.log('info', 'Update geladen', r.updateInfo.version);
+  setTimeout(() => autoUpdater.quitAndInstall(true, true), 500);
+  return true;
 });
 
 // ---------- Addon-Updates ----------

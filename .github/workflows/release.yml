@@ -17,8 +17,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-      - run: npm ci
+      - run: npm install --no-audit --no-fund
       - name: Version lesen, pruefen ob Release schon existiert
         id: ver
         shell: bash
@@ -30,15 +29,18 @@ jobs:
           if gh release view "v$V" >/dev/null 2>&1; then echo "exists=1" >> "$GITHUB_OUTPUT"; else echo "exists=0" >> "$GITHUB_OUTPUT"; fi
       - if: steps.ver.outputs.exists == '0'
         run: npm run dist
-      - name: version.json erzeugen
+      - name: Dateien vorbereiten
         if: steps.ver.outputs.exists == '0'
         shell: bash
         run: |
           V="${{ steps.ver.outputs.v }}"
-          F=dist/HomeOfTheLichKing-Launcher.exe
+          ls -la dist
+          F="dist/HomeOfTheLichKing-Setup-$V.exe"
+          test -f "$F" && test -f dist/latest.yml
+          cp "$F" dist/HomeOfTheLichKing-Setup.exe
           SHA=$(sha256sum "$F" | cut -d' ' -f1)
           BASE="https://github.com/${GITHUB_REPOSITORY}/releases"
-          printf '{\n  "version": "%s",\n  "url": "%s/tag/%s",\n  "exe": "%s/latest/download/HomeOfTheLichKing-Launcher.exe",\n  "notes": "%s",\n  "sha256": "%s"\n}\n' "$V" "$BASE" "v$V" "$BASE" "Launcher $V" "$SHA" > dist/version.json
+          printf '{\n  "version": "%s",\n  "url": "%s/tag/%s",\n  "exe": "%s/latest/download/HomeOfTheLichKing-Setup.exe",\n  "notes": "%s",\n  "sha256": "%s"\n}\n' "$V" "$BASE" "v$V" "$BASE" "Launcher $V" "$SHA" > dist/version.json
           cat dist/version.json
       - name: Release veroeffentlichen
         if: steps.ver.outputs.exists == '0'
@@ -46,5 +48,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp dist/HomeOfTheLichKing-Launcher.exe "dist/HomeOfTheLichKing-Launcher-${{ steps.ver.outputs.v }}.exe"
-          gh release create "v${{ steps.ver.outputs.v }}" dist/HomeOfTheLichKing-Launcher.exe "dist/HomeOfTheLichKing-Launcher-${{ steps.ver.outputs.v }}.exe" dist/version.json --target "$GITHUB_SHA" --title "Launcher ${{ steps.ver.outputs.v }}" --generate-notes
+          V="${{ steps.ver.outputs.v }}"
+          gh release create "v$V" "dist/HomeOfTheLichKing-Setup-$V.exe" "dist/HomeOfTheLichKing-Setup-$V.exe.blockmap" dist/latest.yml dist/HomeOfTheLichKing-Setup.exe dist/version.json --target "$GITHUB_SHA" --title "Launcher $V" --generate-notes

@@ -574,6 +574,7 @@ const FAQ = [
   ['Wo liegt die Log-Datei?', 'Unter Hilfe auf "Log-Datei zeigen" klicken. Sie wird automatisch gepflegt und bleibt unter 2 MB.']
 ];
 const CHANGES = [
+  ['0.6.0', ['Richtiger Installer statt Portable-Datei: schnellerer Start', 'Updates laden nur noch die geänderten Teile', 'Kleinere Datei durch weniger Sprachpakete']],
   ['0.5.1', ['Update-Anzeige und automatisches Update über GitHub geprüft']],
   ['0.5.0', ['Neuer Reiter Kalender: WoW-Feiertage, Adventskalender und Server-Events', 'GMs können im Kalender Server-Events eintragen', 'Startseite mit "Heute los" und Online-Liste, Erinnerung vor Events', 'Versionsanzeige oben rechts mit Update-Hinweis', 'Schnellerer Start durch Cache', 'Werkzeuge und Hilfe findest du jetzt unter Einstellungen', 'Admin-Addons (MultiBot, PlayerBots, AzerothCoreAdmin) werden nur für GMs und nur auf Home of the Lich King geladen und nach dem Spiel wieder entfernt']],
   ['0.4.0', ['Neuer Reiter Hilfe: Fehler melden, Systeminfos, häufige Fragen', 'Absturz-Erkennung: Der Launcher fragt, ob der Bericht gesendet werden soll', 'Optionen: Launcher nach dem Spielstart minimieren oder schließen, mit Windows starten', 'Launcher-Log für leichtere Fehlersuche', 'Neuer Admin-Bereich für GMs (Freigaben, Accounts, Charaktere, Server, Berichte)']],
