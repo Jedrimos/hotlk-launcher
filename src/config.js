@@ -23,6 +23,7 @@ const DEFAULTS = {
   speedLimitMbit: 0,
   lang: 'de',
   autoLogin: true,
+  pbAddons: true,
   afterLaunch: 'keep',
   autostart: false,
   lastVersion: '',

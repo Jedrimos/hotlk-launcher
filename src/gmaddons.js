@@ -48,9 +48,10 @@ async function cleanup(gameDir, log) {
   return left.length === 0;
 }
 
-async function setup(gameDir, session, onPhase, signal, log, cacheDir) {
+async function setup(gameDir, session, onPhase, signal, log, cacheDir, opts) {
   const lvl = session?.gmlevel || 0;
-  const want = LIST.filter((a) => lvl >= a.minGm);
+  const o = { pb: true, admin: true, ...(opts || {}) };
+  const want = LIST.filter((a) => (a.minGm === 0 ? o.pb : (o.admin && lvl >= a.minGm)));
   const folders = [];
   for (const a of want) {
     onPhase('Addon ' + a.name + ' …');

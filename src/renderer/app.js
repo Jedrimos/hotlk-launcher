@@ -127,6 +127,7 @@ function renderAuthChips() {
   $('admTab').hidden = !(session && (session.gmlevel || 0) >= 3);
   $('aInfo').textContent = session ? `Angemeldet als ${session.username}` : 'Nicht angemeldet.';
   $('optAuto').checked = !!cfg.autoLogin;
+  $('optPb').checked = cfg.pbAddons !== false;
   renderAccounts();
 }
 $('acct').onclick = async (e) => {
@@ -162,6 +163,7 @@ $('lGo').onclick = async () => {
 $('lPass').onkeydown = (e) => { if (e.key === 'Enter') $('lGo').click(); };
 $('aOut').onclick = async () => { await api.logout(); session = null; renderAuthChips(); $('heroTitle').textContent = 'Willkommen daheim'; };
 $('optAuto').onchange = async () => { cfg = await api.setConfig({ autoLogin: $('optAuto').checked }); };
+$('optPb').onchange = async () => { cfg = await api.setConfig({ pbAddons: $('optPb').checked }); };
 $('optCache').onchange = async () => { cfg = await api.setConfig({ clearCacheOnSwitch: $('optCache').checked }); };
 $('siteBtn').onclick = () => api.openUrl(cfg.siteUrl);
 
@@ -574,6 +576,7 @@ const FAQ = [
   ['Wo liegt die Log-Datei?', 'Unter Hilfe auf "Log-Datei zeigen" klicken. Sie wird automatisch gepflegt und bleibt unter 2 MB.']
 ];
 const CHANGES = [
+  ['0.6.1', ['Playerbot-Addons (MultiBot, PlayerbotManager) werden jetzt für alle Spieler auf unserem Server geladen', 'Abschaltbar unter Einstellungen \u2192 Konto', 'Das Admin-Addon bleibt nur für GMs']],
   ['0.6.0', ['Richtiger Installer statt Portable-Datei: schnellerer Start', 'Updates laden nur noch die geänderten Teile', 'Kleinere Datei durch weniger Sprachpakete']],
   ['0.5.1', ['Update-Anzeige und automatisches Update über GitHub geprüft']],
   ['0.5.0', ['Neuer Reiter Kalender: WoW-Feiertage, Adventskalender und Server-Events', 'GMs können im Kalender Server-Events eintragen', 'Startseite mit "Heute los" und Online-Liste, Erinnerung vor Events', 'Versionsanzeige oben rechts mit Update-Hinweis', 'Schnellerer Start durch Cache', 'Werkzeuge und Hilfe findest du jetzt unter Einstellungen', 'Admin-Addons (MultiBot, PlayerBots, AzerothCoreAdmin) werden nur für GMs und nur auf Home of the Lich King geladen und nach dem Spiel wieder entfernt']],
