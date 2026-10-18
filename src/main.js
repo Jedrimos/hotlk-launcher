@@ -368,7 +368,7 @@ ipcMain.handle('game:play', async () => {
   const phase = (t) => win.webContents.send('game:phase', t);
   // Admin-Addons parallel zum Pack-Umstellen vorbereiten
   let gmJob = Promise.resolve();
-  if (realm.key === 'home' && session && (session.gmlevel || 0) >= 1 && cfg.gmAddons !== false) {
+  if (realm.key === 'home' && session && cfg.gmAddons !== false) {
     gmJob = gm.cleanup(cfg.gameDir, L.log).then(() => gm.setup(cfg.gameDir, session, phase, null, L.log, app.getPath('userData')))
       .then((f) => { if (f.length) L.log('info', 'GM-Addons installiert', f.join(',')); }).catch((e) => L.log('warn', 'GM-Addons', e.message));
   } else gmJob = gm.cleanup(cfg.gameDir, L.log).catch(() => {});

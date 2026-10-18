@@ -1,5 +1,5 @@
-// Admin-/GM-Addons: werden nur fuer GMs und nur auf dem eigenen Realm installiert
-// und nach dem Spiel (bzw. beim Launcher-Start) wieder entfernt.
+// Realm-Addons (Playerbot-Steuerung fuer alle, Admin-Addon nur fuer GMs): werden nur auf dem eigenen
+// Realm installiert und nach dem Spiel (bzw. beim Launcher-Start) wieder entfernt.
 const fs = require('fs');
 const fsp = fs.promises;
 const path = require('path');
@@ -9,9 +9,8 @@ const REALM_NAME = 'Home of the Lich King';
 const MARK = (g) => path.join(g, 'Data', '_launcher', 'gmaddons.json');
 
 const LIST = [
-  { id: 'gm-multibot', name: 'MultiBot', url: 'https://github.com/Wishmaster117/MultiBot/archive/refs/heads/main.zip', minGm: 1 },
-  { id: 'gm-playerbots', name: 'PlayerBots', url: 'https://github.com/whipowill/wow-addon-playerbots/archive/refs/heads/master.zip', minGm: 1 },
-  { id: 'gm-pbmanager', name: 'PlayerbotManager', url: 'https://github.com/Lichborne-AC/PlayerbotManager/archive/refs/heads/master.zip', minGm: 1 },
+  { id: 'gm-multibot', name: 'MultiBot', url: 'https://github.com/Wishmaster117/MultiBot/archive/refs/heads/main.zip', minGm: 0 },
+  { id: 'gm-pbmanager', name: 'PlayerbotManager', url: 'https://github.com/Lichborne-AC/PlayerbotManager/archive/refs/heads/master.zip', minGm: 0 },
   { id: 'gm-acadmin', name: 'AzerothCoreAdmin', url: 'https://github.com/LightDestory/AzerothCoreAdmin/archive/refs/heads/master.zip', minGm: 1 }
 ];
 
@@ -54,7 +53,7 @@ async function setup(gameDir, session, onPhase, signal, log, cacheDir) {
   const want = LIST.filter((a) => lvl >= a.minGm);
   const folders = [];
   for (const a of want) {
-    onPhase('GM-Addon ' + a.name + ' …');
+    onPhase('Addon ' + a.name + ' …');
     try {
       const names = await addons.install(gameDir, cacheDir ? { ...a, cacheZip: path.join(cacheDir, 'gmzip-' + a.id + '.zip') } : a, () => {}, signal);
       for (const n of names) {
@@ -62,7 +61,7 @@ async function setup(gameDir, session, onPhase, signal, log, cacheDir) {
         if (!folders.includes(n)) folders.push(n);
       }
       await writeMark(gameDir, { folders });   // nach jedem Addon sichern, falls etwas abbricht
-    } catch (e) { log && log('warn', 'GM-Addon fehlgeschlagen', a.name, e.message); onPhase('GM-Addon ' + a.name + ' nicht geladen: ' + e.message); }
+    } catch (e) { log && log('warn', 'Addon fehlgeschlagen', a.name, e.message); onPhase('Addon ' + a.name + ' nicht geladen: ' + e.message); }
   }
   return folders;
 }
