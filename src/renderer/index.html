@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self'">
+<title>Home of the Lich King</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="top">
+  <div class="brand"><img src="assets/logo.png" alt=""><span>Home of the Lich King</span></div>
+  <nav id="tabs">
+    <button data-tab="news" class="on" data-i18n="tab.news">Neuigkeiten</button>
+    <button data-tab="cal">Kalender</button>
+    <button data-tab="server" data-i18n="tab.server">Server</button>
+    <button data-tab="addons" data-i18n="tab.addons">Addons</button>
+    <button data-tab="tools" data-i18n="tab.tools" hidden>Werkzeuge</button>
+    <button data-tab="help" hidden>Hilfe</button>
+    <button data-tab="admin" id="admTab" hidden>Admin</button>
+    <button data-tab="settings" data-i18n="tab.settings">Einstellungen</button>
+  </nav>
+  <div class="spacer"></div>
+  <button id="verBadge" class="chip btn" title="Launcher-Version">v…</button>
+  <div id="srv" class="chip" title="Serverstatus"><i class="dot"></i><span id="srvTxt">…</span></div>
+  <div class="acctw"><button id="acct" class="chip btn">Anmelden</button><div id="acctMenu" class="menu" hidden></div></div>
+  <button id="min" class="win">–</button>
+  <button id="close" class="win x">✕</button>
+</header>
+
+<div id="banner" class="banner" hidden></div>
+<div id="srvBanner" class="banner info" hidden></div>
+
+<main>
+  <section id="v-news" class="view on">
+    <div id="hero" class="hero"><img src="assets/logo.png" alt=""><div><h1 id="heroTitle">Willkommen daheim</h1><p id="heroText">Hier gibt es die neuesten Nachrichten vom Server.</p></div></div>
+    <div id="today" class="today"></div>
+    <div id="newsList" class="cards"></div>
+  </section>
+
+
+  <section id="v-server" class="view">
+    <div class="grid">
+      <div class="card"><h3 id="siName">Server</h3><p id="siTag" class="muted"></p>
+        <div id="siRates" class="rates"></div>
+        <p class="muted" id="siMeta"></p>
+        <div class="row"><button id="siDiscord" hidden>Discord</button><button id="siSite">Webseite</button></div>
+      </div>
+      <div class="card"><h3>Regeln</h3><ul id="siRules" class="rules"></ul></div>
+      <div class="card"><h3>Ereignisse</h3><div id="siEvents" class="muted">Keine Ereignisse geplant.</div></div>
+      <div class="card"><h3>Online <span id="plCount" class="muted"></span></h3><div id="plList" class="players"></div></div>
+    </div>
+  </section>
+
+  <section id="v-tools" class="view">
+    <div class="snav"><button data-go="settings">Einstellungen</button><button data-go="tools">Werkzeuge</button><button data-go="help">Hilfe &amp; Fehler melden</button></div>
+    <div class="grid">
+      <div class="card"><h3>Diagnose &amp; Ladehilfe</h3><p class="muted">Pr&uuml;ft das Spiel auf bekannte Probleme.</p>
+        <div id="dgList"></div><div class="row"><button id="dgRun" class="primary">Jetzt pr&uuml;fen</button></div></div>
+      <div class="card"><h3>Grafik</h3>
+        <div class="form"><label>Aufl&ouml;sung</label><select id="gxRes"></select>
+        <label>Qualit&auml;t</label><select id="gxQ"></select>
+        <label>Sichtweite</label><select id="gxFar"></select>
+        <label>Fenster</label><select id="gxWin"><option value="0">Vollbild</option><option value="1">Fenster</option></select>
+        <label>Musik</label><select id="gxMus"><option value="1">An</option><option value="0">Aus</option></select></div>
+        <div class="row"><button id="gxSave" class="primary">Speichern</button></div>
+        <p class="muted">WoW muss dazu beendet sein.</p></div>
+      <div class="card"><h3>Einstellungen sichern</h3><p class="muted">Sichert Tastenbelegung, Leisten und Addon-Daten (WTF-Ordner).</p>
+        <div id="bkList"></div>
+        <div class="row"><button id="bkNew" class="primary">Jetzt sichern</button><button id="bkReset">WTF zur&uuml;cksetzen</button></div></div>
+      <div class="card"><h3>Absturzberichte</h3><p id="crInfo" class="muted">–</p>
+        <div class="row"><button id="crSend">Letzten Bericht an den Server senden</button></div></div>
+      <div class="card"><h3>Downloads</h3>
+        <div class="form"><label>Tempo begrenzen</label><select id="spLim"><option value="0">Unbegrenzt</option><option value="20">20 MBit/s</option><option value="50">50 MBit/s</option><option value="100">100 MBit/s</option></select></div></div>
+      <div class="card"><h3>Discord</h3><p class="muted">Zeigt anderen, dass du spielst. Dazu die Application-ID einer eigenen Discord-App eintragen (discord.com/developers).</p>
+        <div class="row"><input id="dcId" placeholder="Application-ID"><button id="dcSave">Speichern</button></div></div>
+      <div class="card"><h3>Sprache</h3><div class="form"><label>Oberfl&auml;che</label><select id="lang"><option value="de">Deutsch</option><option value="en">English</option></select></div></div>
+    </div>
+  </section>
+
+  <section id="v-cal" class="view">
+    <div class="toolbar"><button id="calPrev">&lsaquo;</button><b id="calTitle" style="min-width:150px;text-align:center"></b><button id="calNext">&rsaquo;</button><button id="calToday">Heute</button>
+      <span class="muted"><span class="ce srv">Server</span> <span class="ce wow">WoW</span> <span class="ce adv">Advent</span></span></div>
+    <div class="calwrap"><div id="calGrid" class="calgrid"></div>
+      <div class="calside"><div id="calDay" class="card"></div>
+        <div id="calAdd" class="card" hidden><h3>Server-Event eintragen</h3>
+          <div class="row"><input id="evTitle" placeholder="Titel, z.B. Raid-Abend"></div>
+          <div class="row"><input id="evDate" type="date"><input id="evEnd" type="date" title="Ende (optional)"><input id="evTime" type="time" style="max-width:110px" title="Uhrzeit (optional)"></div>
+          <div class="row"><textarea id="evText" rows="3" placeholder="Beschreibung (optional)"></textarea></div>
+          <div class="row"><button id="evSave" class="primary">Eintragen</button></div></div></div></div>
+  </section>
+
+  <section id="v-addons" class="view">
+    <div class="subtabs"><button data-sub="inst" class="on">Installiert <b id="cntInst"></b></button><button data-sub="cat">Katalog</button></div>
+    <div id="addonNoGame" class="empty" hidden>Der Addon-Bereich ist verfügbar, sobald das Spiel installiert ist.</div>
+    <div id="addonBar" class="toolbar">
+      <input id="aSearch" type="search" placeholder="Suchen …">
+      <select id="aCat"></select>
+      <label class="chk" id="aModWrap"><input id="aMods" type="checkbox"> Hilfsmodule zeigen</label>
+    </div>
+    <div id="classBar" class="classes"></div>
+    <div id="addonList" class="alist"></div>
+  </section>
+
+
+  <section id="v-help" class="view">
+    <div class="snav"><button data-go="settings">Einstellungen</button><button data-go="tools">Werkzeuge</button><button data-go="help">Hilfe &amp; Fehler melden</button></div>
+    <div class="grid">
+      <div class="card"><h3>Problem oder Idee?</h3><p class="muted">Etwas funktioniert nicht, du hast einen Wunsch oder eine Frage? Schick uns eine Nachricht. Auf Wunsch gehen Diagnose und Log gleich mit, das spart Nachfragen.</p>
+        <div class="row"><button id="hpReport" class="primary">Fehler melden / Feedback</button><button id="hpCrash">Letzten Absturz senden</button></div></div>
+      <div class="card"><h3>Systeminformationen</h3><div id="hpSys" class="form"></div>
+        <div class="row"><button id="hpCopy">In Zwischenablage kopieren</button><button id="hpLog">Log-Datei zeigen</button></div></div>
+      <div class="card"><h3>Schnelle Hilfe</h3>
+        <div class="row" style="margin-top:0"><button id="hpDiag">Spiel prüfen</button><button id="hpRepair">Dateien reparieren</button><button id="hpSite">Webseite</button><button id="hpDisc" hidden>Discord</button><button id="hpReg">Account erstellen</button></div></div>
+      <div class="card"><h3>Über den Launcher</h3><p id="hpAbout" class="muted"></p>
+        <div class="row"><button id="hpNew">Was ist neu?</button><button id="hpWel">Willkommen zeigen</button></div></div>
+    </div>
+    <h3 style="color:var(--gold);margin:22px 0 10px">Häufige Fragen</h3>
+    <div id="faq" class="faq"></div>
+  </section>
+
+  <section id="v-admin" class="view">
+    <div class="subtabs" id="admSubs"><button data-as="ov" class="on">Übersicht</button><button data-as="pen" id="penBtn">Freigaben</button><button data-as="acc">Accounts</button><button data-as="chr">Charaktere</button><button data-as="srv">Server</button><button data-as="tik">Tickets</button><button data-as="ban">Sperren</button><button data-as="nws">News &amp; Banner</button><button data-as="cfg">Einstellungen</button><button data-as="rep">Berichte</button><button data-as="log">Protokoll</button></div>
+    <div id="as-ov" class="asec"><div id="ovStats" class="rates"></div><div class="grid"><div class="card"><h3>Neueste Accounts</h3><div id="ovNew"></div></div><div class="card"><h3>Schnellzugriff</h3><div class="row"><button id="ovWeb" class="primary">Admin-Bereich der Webseite</button><button id="ovSave">Welt speichern</button></div></div></div></div>
+    <div id="as-pen" class="asec" hidden><div class="toolbar"><button id="penReload">Aktualisieren</button><span class="muted">Neue Registrierungen können erst spielen, wenn du sie freigibst.</span></div><div id="penRes" class="alist"></div></div>
+    <div id="as-acc" class="asec" hidden><div id="accList2"><div class="toolbar"><input id="accQ" type="search" placeholder="Account oder E-Mail suchen …"><button id="accGo" class="primary">Suchen</button></div><div id="accRes" class="alist"></div></div><div id="accDet" hidden></div></div>
+    <div id="as-chr" class="asec" hidden><div class="toolbar"><input id="chrQ" type="search" placeholder="Charaktername suchen …"><button id="chrGo" class="primary">Suchen</button><label class="chk"><input id="chrBots" type="checkbox"> Bots zeigen</label></div><div id="chrRes" class="alist"></div></div>
+    <div id="as-srv" class="asec" hidden><div class="grid">
+      <div class="card"><h3>Ankündigung an alle</h3><div class="row"><input id="anText" placeholder="Text, der im Spiel erscheint"><button id="anSend" class="primary">Senden</button></div></div>
+      <div class="card"><h3>Willkommensnachricht (MOTD)</h3><div class="row"><input id="motdText" placeholder="Neue Nachricht beim Einloggen"><button id="motdSet" class="primary">Setzen</button></div></div>
+      <div class="card"><h3>Neustart / Herunterfahren</h3><div class="row"><input id="rsSec" type="number" min="30" max="3600" value="300" style="max-width:110px"> <span class="muted">Sekunden</span></div><div class="row"><button id="rsGo" class="primary">Neustart planen</button><button id="sdGo">Herunterfahren</button><button id="rsCancel">Abbrechen</button></div></div>
+      <div class="card"><h3>Server</h3><div class="row"><button id="svInfo">Server-Info</button><button id="svSave">Welt speichern</button><button id="svReload">Config neu laden</button></div><pre id="svOut" class="out"></pre></div>
+    </div></div>
+    <div id="as-tik" class="asec" hidden><div class="toolbar"><button id="tikReload">Aktualisieren</button><span class="muted">Offene Spiel-Tickets (GM-Hilfe). Antworten gehen als Antwort an den Spieler.</span></div><div id="tikRes" class="alist"></div></div>
+    <div id="as-ban" class="asec" hidden><div class="toolbar"><button id="banReload">Aktualisieren</button></div><div id="banRes" class="alist"></div></div>
+    <div id="as-nws" class="asec" hidden><div class="grid">
+      <div class="card"><h3>Banner im Launcher</h3>
+        <div class="row"><input id="bText" placeholder="z.B. Neustart um 20 Uhr"><select id="bLevel"><option value="info">Info</option><option value="warn">Warnung</option></select><input id="bHours" type="number" min="1" max="168" value="6" style="width:70px;flex:none" title="Stunden sichtbar"></div>
+        <div class="row"><button id="bSet" class="primary">Banner setzen</button><button id="bClear">Entfernen</button></div></div>
+      <div class="card"><h3>News veröffentlichen</h3>
+        <div class="row"><input id="nTitle" placeholder="Titel"></div>
+        <div class="row"><input id="nImg" placeholder="Bild-Link (https://…, optional)"><select id="nCat"><option value="update">Update</option><option value="event">Event</option><option value="maintenance">Wartung</option><option value="other">Sonstiges</option></select></div>
+        <div class="row"><textarea id="nText" rows="4" placeholder="Text"></textarea></div>
+        <label class="chk"><input id="nImp" type="checkbox"> Wichtig</label>
+        <div class="row"><button id="nSend" class="primary">Veröffentlichen</button></div></div>
+      <div class="card"><h3>Bisherige News</h3><div id="nwList"></div></div>
+    </div></div>
+    <div id="as-cfg" class="asec" hidden><div class="card" style="max-width:760px"><h3>Server-Infos für den Launcher</h3>
+      <div class="form"><label>Untertitel</label><input id="cfTag"><label>Client</label><input id="cfPatch"><label>Neustart</label><input id="cfRestart"><label>Discord-Link</label><input id="cfDiscord" placeholder="https://discord.gg/…">
+      <label>XP</label><input id="cfXp"><label>Drops</label><input id="cfDrop"><label>Gold</label><input id="cfGold"><label>Ehre</label><input id="cfHonor"></div>
+      <p class="muted" style="margin-bottom:2px">Regeln (eine pro Zeile)</p><textarea id="cfRules" rows="5"></textarea>
+      <div class="row"><button id="cfSave" class="primary">Speichern</button></div></div></div>
+    <div id="as-rep" class="asec" hidden><div class="toolbar"><button id="repReload">Aktualisieren</button><span class="muted">Berichte aus dem Launcher: Fehler, Ideen, Fragen, Abstürze.</span></div><div id="repRes" class="alist"></div></div>
+    <div id="as-log" class="asec" hidden><div class="toolbar"><button id="logReload">Aktualisieren</button></div><pre id="logOut" class="out" style="max-height:none"></pre></div>
+  </section>
+
+  <section id="v-settings" class="view">
+    <div class="snav"><button data-go="settings">Einstellungen</button><button data-go="tools">Werkzeuge</button><button data-go="help">Hilfe &amp; Fehler melden</button></div>
+    <div class="grid">
+      <div class="card"><h3>Spielordner</h3>
+        <p id="gDir" class="path">–</p><p id="gMeta" class="muted"></p>
+        <div class="row"><button id="gPick">Ordner wählen</button><button id="gDetect">Spiel suchen</button></div>
+        <div id="gFound" class="found"></div>
+      </div>
+      <div class="card"><h3>Spieldateien</h3>
+        <p id="bMeta" class="muted">–</p>
+        <div class="row"><button id="bSync">Fehlende Dateien laden</button><button id="bDeep">Alles prüfen &amp; reparieren</button></div>
+      </div>
+      <div class="card"><h3>Packs</h3><div id="packList"></div>
+        <label class="chk"><input id="optCache" type="checkbox"> Cache beim Wechsel leeren</label>
+      </div>
+      <div class="card"><h3>Server</h3><div id="realmList"></div>
+        <div class="row"><input id="rName" placeholder="Name"><input id="rHost" placeholder="logon.beispiel.de"><button id="rAdd">Hinzufügen</button></div>
+      </div>
+      <div class="card"><h3>Konto</h3>
+        <p id="aInfo" class="muted">Nicht angemeldet.</p>
+        <div id="accList"></div>
+        <label class="chk"><input id="optAuto" type="checkbox"> Im Spiel automatisch anmelden</label>
+        <div class="row"><button id="aOpen">Anmelden</button><button id="aOut">Abmelden</button></div>
+      </div>
+      <div class="card"><h3>Launcher</h3>
+        <div class="form"><label>Nach dem Spielstart</label><select id="optAfter"><option value="keep">Offen lassen</option><option value="minimize">Minimieren</option><option value="close">Launcher schließen</option></select></div>
+        <label class="chk" style="margin-top:10px"><input id="optBoot" type="checkbox"> Mit Windows starten</label>
+      </div>
+      <div class="card"><h3>Über</h3><p id="about" class="muted"></p><div class="row"><button id="aUpd">Nach Updates suchen</button></div>
+        <div class="row"><button id="siteBtn">Webseite öffnen</button><button id="welcomeBtn">Willkommen zeigen</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="bar">
+  <div class="sel"><label>Server</label><select id="realmSel"></select></div>
+  <div class="sel"><label>Grafik</label><select id="packSel"></select></div>
+  <div id="note" class="note"></div>
+  <div class="spacer"></div>
+  <div id="prog" class="prog" hidden><div class="pt"><span id="progTxt"></span><button id="cancel">Abbrechen</button></div><div class="pb"><i id="progBar"></i></div></div>
+  <button id="play" class="play">SPIELEN</button>
+</footer>
+
+<div id="askM" class="modal" hidden><div class="dlg"><h2 id="askT"></h2><div id="askF" class="askf"></div><div class="row end"><button id="askNo">Abbrechen</button><button id="askYes" class="primary">OK</button></div></div></div>
+<div id="toast" class="toast" hidden></div>
+
+<div id="repM" class="modal" hidden><div class="dlg wide">
+  <h2 id="repT">Fehler melden / Feedback</h2>
+  <div class="form"><label>Art</label><select id="repKind"><option value="FEHLER">Fehler</option><option value="IDEE">Idee / Wunsch</option><option value="FRAGE">Frage</option><option value="ABSTURZ">Absturz</option></select>
+  <label>Kontakt (optional)</label><input id="repContact" placeholder="Discord-Name oder E-Mail für Rückfragen"></div>
+  <textarea id="repText" rows="6" placeholder="Was ist passiert? Was hast du gemacht, kurz bevor es passiert ist?"></textarea>
+  <label class="chk"><input id="repDiag" type="checkbox" checked> Diagnose anhängen (Spielprüfung)</label>
+  <label class="chk"><input id="repCrash" type="checkbox" checked> Letzte WoW-Fehlerdatei anhängen</label>
+  <label class="chk"><input id="repLog" type="checkbox" checked> Launcher-Log anhängen</label>
+  <p class="muted" style="margin:0;font-size:12px">Es werden nur technische Daten gesendet, keine Passwörter.</p>
+  <div id="repErr" class="err"></div>
+  <div class="row end"><button id="repNo">Abbrechen</button><button id="repGo" class="primary">Senden</button></div>
+</div></div>
+<div id="viewM" class="modal" hidden><div class="dlg wide"><h2 id="viewT"></h2><pre id="viewB" class="out" style="max-height:420px"></pre><div class="row end"><button id="viewDel" hidden>Löschen</button><button id="viewCopy">Kopieren</button><button id="viewNo" class="primary">Schließen</button></div></div></div>
+<div id="newM" class="modal" hidden><div class="dlg wide"><h2 id="newT">Was ist neu?</h2><div id="newB" class="chg"></div><div class="row end"><button id="newNo" class="primary">Alles klar</button></div></div></div>
+<div id="loginM" class="modal" hidden><div class="dlg">
+  <h2>Anmelden</h2><p class="muted">Mit deinem Spiel- bzw. Webseiten-Account.</p>
+  <input id="lUser" placeholder="Accountname" autocomplete="username">
+  <input id="lPass" type="password" placeholder="Passwort" autocomplete="current-password">
+  <label class="chk"><input id="lRem" type="checkbox" checked> Angemeldet bleiben</label>
+  <div id="lErr" class="err"></div>
+  <p class="muted" style="text-align:center;margin:0">Noch kein Account? <a href="#" id="lReg" class="lnk">Jetzt kostenlos registrieren</a></p>
+  <div class="row end"><button id="lCancel">Abbrechen</button><button id="lGo" class="primary">Anmelden</button></div>
+</div></div>
+
+<div id="welcome" class="modal big" hidden><div class="dlg wel">
+  <img src="assets/logo.png" alt="Home of the Lich King">
+  <h2 id="wTitle">Willkommen in deiner Heimat in Azeroth</h2>
+  <p>Hier bist du zuhause: ein Server von Freunden für Freunde. Wähle unten deinen Server, lade das Spiel mit einem Klick und leg los.</p>
+  <ul>
+    <li><b>Neuigkeiten</b> direkt von der Webseite</li>
+    <li><b>Addons</b> aktivieren, abschalten und neue installieren</li>
+    <li><b>Normal oder HD</b>: beide Grafikpacks sind wählbar</li>
+  </ul>
+  <div class="row end" style="justify-content:center"><button id="wReg">Account erstellen</button><button id="wGo" class="primary">Los geht's</button></div>
+</div></div>
+<script src="app.js"></script>
+<script src="calendar.js"></script>
+</body>
+</html>

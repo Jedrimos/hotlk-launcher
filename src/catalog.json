@@ -1,0 +1,632 @@
+[
+ {
+  "id": "elvui",
+  "name": "ElvUI",
+  "desc": "Komplette Oberfläche: Einheitenfenster, Leisten, Taschen, Chat in einem Paket.",
+  "cat": "Oberfläche",
+  "url": "https://github.com/ElvUI-WotLK/ElvUI/archive/refs/heads/master.zip",
+  "classes": [],
+  "rec": true,
+  "note": "Ersetzt viele andere UI-Addons.",
+  "site": "https://github.com/ElvUI-WotLK/ElvUI"
+ },
+ {
+  "id": "dominos",
+  "name": "Dominos",
+  "desc": "Flexible Aktionsleisten zum Verschieben und Skalieren.",
+  "cat": "Oberfläche",
+  "url": "https://github.com/bkader/Dominos/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/bkader/Dominos"
+ },
+ {
+  "id": "bartender4",
+  "name": "Bartender4",
+  "desc": "Beliebte Aktionsleisten mit vielen Einstellungen.",
+  "cat": "Oberfläche",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/Bartender4.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=Bartender4%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "suf",
+  "name": "Shadowed Unit Frames",
+  "desc": "Frei einstellbare Spieler-, Ziel- und Gruppenfenster.",
+  "cat": "Oberfläche",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/ShadowedUnitFrames.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=Shadowed%20Unit%20Frames%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "ruf",
+  "name": "Raeli's Unit Frames",
+  "desc": "Schlanke Einheitenfenster.",
+  "cat": "Oberfläche",
+  "url": "https://github.com/bkader/RUF-WoTLK/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/bkader/RUF-WoTLK"
+ },
+ {
+  "id": "dragonui",
+  "name": "DragonUI",
+  "desc": "Oberfläche im Stil des späteren Dragonflight-UI.",
+  "cat": "Oberfläche",
+  "url": "https://github.com/NeticSoul/DragonUI/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/NeticSoul/DragonUI"
+ },
+ {
+  "id": "omnicc",
+  "name": "OmniCC",
+  "desc": "Zeigt Abklingzeiten als Zahl auf Symbolen.",
+  "cat": "Oberfläche",
+  "url": "https://github.com/NoM0Re/OmniCC-WotLK/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": true,
+  "note": "",
+  "site": "https://github.com/NoM0Re/OmniCC-WotLK"
+ },
+ {
+  "id": "moveanything",
+  "name": "MoveAnything",
+  "desc": "Beliebige Fenster und Elemente verschieben.",
+  "cat": "Oberfläche",
+  "url": "https://github.com/sirus-addons/MoveAnything/archive/refs/heads/master.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/sirus-addons/MoveAnything"
+ },
+ {
+  "id": "blizzmove",
+  "name": "BlizzMove",
+  "desc": "Blizzard-Fenster per Maus verschieben.",
+  "cat": "Oberfläche",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/BlizzMove.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=BlizzMove%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "pminimap",
+  "name": "pretty_minimap",
+  "desc": "Schönere, rundere Minikarte.",
+  "cat": "Oberfläche",
+  "url": "https://github.com/s0h2x/pretty_minimap/archive/refs/heads/master.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/s0h2x/pretty_minimap"
+ },
+ {
+  "id": "sexymap",
+  "name": "SexyMap",
+  "desc": "Minikarte individuell gestalten.",
+  "cat": "Oberfläche",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/SexyMap.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=SexyMap%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "details",
+  "name": "Details!",
+  "desc": "Schadens- und Heilungsmesser mit vielen Auswertungen.",
+  "cat": "Kampf & Schaden",
+  "url": "https://github.com/Bunny67/Details-WotLK/archive/refs/heads/master.zip",
+  "classes": [],
+  "rec": true,
+  "note": "",
+  "site": "https://github.com/Bunny67/Details-WotLK"
+ },
+ {
+  "id": "skada",
+  "name": "Skada",
+  "desc": "Leichter Schadensmesser, ressourcenschonend.",
+  "cat": "Kampf & Schaden",
+  "url": "https://github.com/bkader/Skada-WoTLK/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": true,
+  "note": "",
+  "site": "https://github.com/bkader/Skada-WoTLK"
+ },
+ {
+  "id": "msbt",
+  "name": "Mik's Scrolling Battle Text",
+  "desc": "Kampftext frei anpassbar.",
+  "cat": "Kampf & Schaden",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/MikScrollingBattleText.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=Mik%27s%20Scrolling%20Battle%20Text%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "tmw",
+  "name": "TellMeWhen",
+  "desc": "Zeigt Fähigkeiten, Buffs und Cooldowns als Symbole.",
+  "cat": "Kampf & Schaden",
+  "url": "https://github.com/bkader/TellMeWhen_3.3.5/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/bkader/TellMeWhen_3.3.5"
+ },
+ {
+  "id": "weakauras",
+  "name": "WeakAuras",
+  "desc": "Eigene Anzeigen für Buffs, Procs und Cooldowns.",
+  "cat": "Kampf & Schaden",
+  "url": "https://github.com/NoM0Re/WeakAuras-WotLK/archive/refs/heads/master.zip",
+  "classes": [],
+  "rec": true,
+  "note": "Sehr mächtig, braucht Einarbeitung.",
+  "site": "https://github.com/NoM0Re/WeakAuras-WotLK"
+ },
+ {
+  "id": "tidyplates",
+  "name": "Tidy Plates",
+  "desc": "Anpassbare Namensplaketten.",
+  "cat": "Kampf & Schaden",
+  "url": "https://github.com/bkader/TidyPlates_WoTLK/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/bkader/TidyPlates_WoTLK"
+ },
+ {
+  "id": "platebuffs",
+  "name": "PlateBuffs",
+  "desc": "Zeigt Debuffs auf Namensplaketten.",
+  "cat": "Kampf & Schaden",
+  "url": "https://github.com/KhalGH/PlateBuffs-WoTLK/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/KhalGH/PlateBuffs-WoTLK"
+ },
+ {
+  "id": "notplater",
+  "name": "NotPlater",
+  "desc": "Einfache Namensplaketten mit Zauberleiste.",
+  "cat": "Kampf & Schaden",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/NotPlater-3.3.5.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=NotPlater%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "dbm",
+  "name": "Deadly Boss Mods",
+  "desc": "Warnungen und Timer für Bosskämpfe.",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/Zidras/DBM-Warmane/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": true,
+  "note": "",
+  "site": "https://github.com/Zidras/DBM-Warmane"
+ },
+ {
+  "id": "omen",
+  "name": "Omen",
+  "desc": "Bedrohungsanzeige (Aggro) für Gruppen und Raids.",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/Omen.zip",
+  "classes": [],
+  "rec": true,
+  "note": "",
+  "site": "https://www.google.com/search?q=Omen%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "grid2",
+  "name": "Grid2",
+  "desc": "Übersichtliche Raidfenster für Heiler.",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/bkader/Grid2-WoTLK/archive/refs/heads/main.zip",
+  "classes": [
+   "priest",
+   "paladin",
+   "druid",
+   "shaman"
+  ],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/bkader/Grid2-WoTLK"
+ },
+ {
+  "id": "vuhdo",
+  "name": "VuhDo",
+  "desc": "Raidfenster mit Heiler-Fokus.",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/VuhDo.zip",
+  "classes": [
+   "priest",
+   "paladin",
+   "druid",
+   "shaman"
+  ],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=VuhDo%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "healbot",
+  "name": "HealBot",
+  "desc": "Klick-Heilung mit Gruppenfenstern.",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/HealBot.zip",
+  "classes": [
+   "priest",
+   "paladin",
+   "druid",
+   "shaman"
+  ],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=HealBot%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "decursive",
+  "name": "Decursive",
+  "desc": "Entfernt Flüche, Gifte und Krankheiten per Klick.",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/Decursive.zip",
+  "classes": [
+   "priest",
+   "paladin",
+   "druid",
+   "shaman",
+   "mage"
+  ],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=Decursive%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "gtfo",
+  "name": "GTFO",
+  "desc": "Warnt, wenn du in Feuer oder Schaden am Boden stehst.",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/GTFO.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=GTFO%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "mrt",
+  "name": "Method Raid Tools",
+  "desc": "Raid-Notizen, Aufstellung und Cooldown-Planung.",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/ExoJdi/Method-Raid-Tools-3.3.5a/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/ExoJdi/Method-Raid-Tools-3.3.5a"
+ },
+ {
+  "id": "krt",
+  "name": "KRT",
+  "desc": "Beuteverwaltung für Raidleiter.",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/bkader/KRT/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/bkader/KRT"
+ },
+ {
+  "id": "raidbuffstatus",
+  "name": "RaidBuffStatus",
+  "desc": "Zeigt fehlende Buffs im Raid.",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/RaidBuffStatus.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=RaidBuffStatus%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "halion",
+  "name": "HalionHelper",
+  "desc": "Hilfe für den Halion-Kampf (Rubinsanktum).",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/bkader/HalionHelper-WoTLK/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/bkader/HalionHelper-WoTLK"
+ },
+ {
+  "id": "atlasloot",
+  "name": "AtlasLoot",
+  "desc": "Beutetabellen aller Bosse und Instanzen.",
+  "cat": "Raid & Dungeon",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/AtlasLoot.zip",
+  "classes": [],
+  "rec": true,
+  "note": "",
+  "site": "https://www.google.com/search?q=AtlasLoot%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "questie",
+  "name": "Questie",
+  "desc": "Zeigt Questgeber und Questziele auf der Karte.",
+  "cat": "Quests & Karte",
+  "url": "https://github.com/Aldori15/Questie/archive/refs/heads/335.zip",
+  "classes": [],
+  "rec": true,
+  "note": "",
+  "site": "https://github.com/Aldori15/Questie"
+ },
+ {
+  "id": "mapster",
+  "name": "Mapster",
+  "desc": "Größere, verschiebbare Weltkarte.",
+  "cat": "Quests & Karte",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/Mapster.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=Mapster%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "carbonite",
+  "name": "Carbonite",
+  "desc": "Karte, Quest-Hilfe und Levelführer in einem.",
+  "cat": "Quests & Karte",
+  "url": "https://github.com/anzz1/Carbonite-3.3.5/archive/refs/heads/master.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/anzz1/Carbonite-3.3.5"
+ },
+ {
+  "id": "zygor",
+  "name": "Zygor Guides",
+  "desc": "Schritt-für-Schritt-Levelführer.",
+  "cat": "Quests & Karte",
+  "url": "https://github.com/ErebusAres/ZygorGuidesRemaster-3.3.5a_WOTLK/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/ErebusAres/ZygorGuidesRemaster-3.3.5a_WOTLK"
+ },
+ {
+  "id": "turnin",
+  "name": "TurnIn",
+  "desc": "Quests automatisch annehmen und abgeben.",
+  "cat": "Quests & Karte",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/TurnIn-2.1.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=TurnIn%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "bagnon",
+  "name": "Bagnon",
+  "desc": "Alle Taschen in einem Fenster, durchsuchbar.",
+  "cat": "Taschen & Handel",
+  "url": "https://github.com/RichSteini/Bagnon-3.3.5/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": true,
+  "note": "",
+  "site": "https://github.com/RichSteini/Bagnon-3.3.5"
+ },
+ {
+  "id": "adibags",
+  "name": "AdiBags",
+  "desc": "Taschen nach Kategorien sortiert.",
+  "cat": "Taschen & Handel",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/AdiBags.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=AdiBags%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "auctionator",
+  "name": "Auctionator",
+  "desc": "Schnelleres Auktionshaus mit Preisvorschlägen.",
+  "cat": "Taschen & Handel",
+  "url": "https://github.com/alchem1ster/WotLK-Auctionator/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": true,
+  "note": "",
+  "site": "https://github.com/alchem1ster/WotLK-Auctionator"
+ },
+ {
+  "id": "tsm",
+  "name": "TradeSkillMaster",
+  "desc": "Handel und Berufe automatisieren, Gewinne berechnen.",
+  "cat": "Taschen & Handel",
+  "url": "https://github.com/andrew6180/TradeSkillMaster/archive/refs/heads/master.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/andrew6180/TradeSkillMaster"
+ },
+ {
+  "id": "postal",
+  "name": "Postal",
+  "desc": "Post schneller leeren und versenden.",
+  "cat": "Taschen & Handel",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/Postal.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=Postal%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "autorepair",
+  "name": "AutoRepair",
+  "desc": "Repariert und verkauft Grauzeug beim Händler.",
+  "cat": "Taschen & Handel",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/autorepair.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=AutoRepair%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "eog",
+  "name": "Emblem of Gold",
+  "desc": "Zeigt Gold- und Marken-Werte von Items.",
+  "cat": "Taschen & Handel",
+  "url": "https://github.com/Stradios/Emblem-of-Gold/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/Stradios/Emblem-of-Gold"
+ },
+ {
+  "id": "chatter",
+  "name": "Chatter",
+  "desc": "Chat-Fenster aufräumen und anpassen.",
+  "cat": "Chat & Soziales",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/Chatter.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=Chatter%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "wim",
+  "name": "WIM",
+  "desc": "Flüsternachrichten in eigenen Fenstern.",
+  "cat": "Chat & Soziales",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/WIM.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=WIM%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "stfu",
+  "name": "STFU Chat Filter",
+  "desc": "Filtert Spam und Handelsmüll aus dem Chat.",
+  "cat": "Chat & Soziales",
+  "url": "https://github.com/Arcitec/STFU_Chat_Filter/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/Arcitec/STFU_Chat_Filter"
+ },
+ {
+  "id": "gearscorelite",
+  "name": "GearScoreLite Reborn",
+  "desc": "Zeigt den GearScore von Spielern im Tooltip.",
+  "cat": "Chat & Soziales",
+  "url": "https://github.com/Arcitec/GearScoreLite_Reborn/archive/refs/heads/main.zip",
+  "classes": [],
+  "rec": true,
+  "note": "",
+  "site": "https://github.com/Arcitec/GearScoreLite_Reborn"
+ },
+ {
+  "id": "pallypower",
+  "name": "PallyPower Improved",
+  "desc": "Segen-Verwaltung für Paladine im Raid.",
+  "cat": "Klassen",
+  "url": "https://github.com/NoM0Re/PallyPower-Improved-3.3.5/archive/refs/heads/main.zip",
+  "classes": [
+   "paladin"
+  ],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/NoM0Re/PallyPower-Improved-3.3.5"
+ },
+ {
+  "id": "eclipsebar",
+  "name": "EclipseBar",
+  "desc": "Eklipse-Anzeige für Wilde Druiden.",
+  "cat": "Klassen",
+  "url": "https://github.com/bkader/EclipseBar-WotLK/archive/refs/heads/main.zip",
+  "classes": [
+   "druid"
+  ],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/bkader/EclipseBar-WotLK"
+ },
+ {
+  "id": "talented",
+  "name": "Talented",
+  "desc": "Talente planen und vergleichen.",
+  "cat": "Klassen",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/Talented.zip",
+  "classes": [],
+  "rec": true,
+  "note": "",
+  "site": "https://www.google.com/search?q=Talented%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "ratingbuster",
+  "name": "RatingBuster",
+  "desc": "Zeigt Wertungen als Prozent im Tooltip.",
+  "cat": "Sonstiges",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/RatingBuster.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=RatingBuster%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "acp",
+  "name": "ACP",
+  "desc": "Addons im Spiel ein- und ausschalten.",
+  "cat": "Sonstiges",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/ACP.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=ACP%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "quartz",
+  "name": "Quartz",
+  "desc": "Anpassbare Zauberleiste.",
+  "cat": "Kampf & Schaden",
+  "url": "https://github.com/NoM0Re/WoW-3.3.5a-Addons/raw/main/src/Addons/Quartz.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://www.google.com/search?q=Quartz%20WoW%203.3.5%20addon"
+ },
+ {
+  "id": "equipence",
+  "name": "Equipence",
+  "desc": "Ausrüstungssets schnell wechseln.",
+  "cat": "Sonstiges",
+  "url": "https://github.com/s0h2x/Equipence/archive/refs/heads/master.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/s0h2x/Equipence"
+ },
+ {
+  "id": "dalaranah",
+  "name": "DalaranAH",
+  "desc": "Auktionshaus-Zugriff überall.",
+  "cat": "Taschen & Handel",
+  "url": "https://github.com/NoM0Re/DalaranAH/releases/latest/download/DalaranAH.zip",
+  "classes": [],
+  "rec": false,
+  "note": "",
+  "site": "https://github.com/NoM0Re/DalaranAH"
+ }
+]

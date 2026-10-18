@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Version aus Tag pruefen
+        shell: bash
+        run: |
+          V="${GITHUB_REF_NAME#v}"
+          P=$(node -p "require('./package.json').version")
+          if [ "$V" != "$P" ]; then echo "Tag $V passt nicht zu package.json $P"; exit 1; fi
+      - run: npm run dist
+      - name: version.json erzeugen
+        shell: bash
+        run: |
+          V="${GITHUB_REF_NAME#v}"
+          F=dist/HomeOfTheLichKing-Launcher.exe
+          SHA=$(sha256sum "$F" | cut -d' ' -f1)
+          BASE="https://github.com/${GITHUB_REPOSITORY}/releases"
+          printf '{\n  "version": "%s",\n  "url": "%s/tag/%s",\n  "exe": "%s/latest/download/HomeOfTheLichKing-Launcher.exe",\n  "notes": "%s",\n  "sha256": "%s"\n}\n' "$V" "$BASE" "$GITHUB_REF_NAME" "$BASE" "Launcher $V" "$SHA" > dist/version.json
+          cat dist/version.json
+      - name: Release veroeffentlichen
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/HomeOfTheLichKing-Launcher.exe dist/version.json --title "Launcher ${GITHUB_REF_NAME#v}" --generate-notes
