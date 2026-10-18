@@ -2,7 +2,9 @@ name: Release
 
 on:
   push:
-    tags: ['v*']
+    branches: [main]
+    paths: ['package.json']
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -17,25 +19,31 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - name: Version aus Tag pruefen
-        shell: bash
-        run: |
-          V="${GITHUB_REF_NAME#v}"
-          P=$(node -p "require('./package.json').version")
-          if [ "$V" != "$P" ]; then echo "Tag $V passt nicht zu package.json $P"; exit 1; fi
-      - run: npm run dist
-      - name: version.json erzeugen
-        shell: bash
-        run: |
-          V="${GITHUB_REF_NAME#v}"
-          F=dist/HomeOfTheLichKing-Launcher.exe
-          SHA=$(sha256sum "$F" | cut -d' ' -f1)
-          BASE="https://github.com/${GITHUB_REPOSITORY}/releases"
-          printf '{\n  "version": "%s",\n  "url": "%s/tag/%s",\n  "exe": "%s/latest/download/HomeOfTheLichKing-Launcher.exe",\n  "notes": "%s",\n  "sha256": "%s"\n}\n' "$V" "$BASE" "$GITHUB_REF_NAME" "$BASE" "Launcher $V" "$SHA" > dist/version.json
-          cat dist/version.json
-      - name: Release veroeffentlichen
+      - name: Version lesen, pruefen ob Release schon existiert
+        id: ver
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/HomeOfTheLichKing-Launcher.exe dist/version.json --title "Launcher ${GITHUB_REF_NAME#v}" --generate-notes
+          V=$(node -p "require('./package.json').version")
+          echo "v=$V" >> "$GITHUB_OUTPUT"
+          if gh release view "v$V" >/dev/null 2>&1; then echo "exists=1" >> "$GITHUB_OUTPUT"; else echo "exists=0" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.ver.outputs.exists == '0'
+        run: npm run dist
+      - name: version.json erzeugen
+        if: steps.ver.outputs.exists == '0'
+        shell: bash
+        run: |
+          V="${{ steps.ver.outputs.v }}"
+          F=dist/HomeOfTheLichKing-Launcher.exe
+          SHA=$(sha256sum "$F" | cut -d' ' -f1)
+          BASE="https://github.com/${GITHUB_REPOSITORY}/releases"
+          printf '{\n  "version": "%s",\n  "url": "%s/tag/%s",\n  "exe": "%s/latest/download/HomeOfTheLichKing-Launcher.exe",\n  "notes": "%s",\n  "sha256": "%s"\n}\n' "$V" "$BASE" "v$V" "$BASE" "Launcher $V" "$SHA" > dist/version.json
+          cat dist/version.json
+      - name: Release veroeffentlichen
+        if: steps.ver.outputs.exists == '0'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ steps.ver.outputs.v }}" dist/HomeOfTheLichKing-Launcher.exe dist/version.json --target "$GITHUB_SHA" --title "Launcher ${{ steps.ver.outputs.v }}" --generate-notes

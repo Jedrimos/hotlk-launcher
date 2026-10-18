@@ -15,6 +15,6 @@ npm run dist
 Die fertige Datei liegt in `dist/HomeOfTheLichKing-Launcher.exe`.
 
 ## Neue Version veroeffentlichen
-1. In `package.json` die Version erhoehen und committen.
-2. Tag setzen und pushen, z. B. `git tag v0.5.0 && git push origin v0.5.0`.
-3. GitHub Actions baut die Exe und legt Release samt `version.json` an. Der Launcher erkennt das Update selbst.
+1. In `package.json` die Version erhoehen und nach `main` pushen.
+2. GitHub Actions baut die Exe, setzt den Tag `v<Version>` und legt das Release samt `version.json` an (nur wenn es diese Version noch nicht gibt).
+3. Der Launcher erkennt das Update selbst.
