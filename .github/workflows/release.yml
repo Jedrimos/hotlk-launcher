@@ -46,4 +46,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "v${{ steps.ver.outputs.v }}" dist/HomeOfTheLichKing-Launcher.exe dist/version.json --target "$GITHUB_SHA" --title "Launcher ${{ steps.ver.outputs.v }}" --generate-notes
+          cp dist/HomeOfTheLichKing-Launcher.exe "dist/HomeOfTheLichKing-Launcher-${{ steps.ver.outputs.v }}.exe"
+          gh release create "v${{ steps.ver.outputs.v }}" dist/HomeOfTheLichKing-Launcher.exe "dist/HomeOfTheLichKing-Launcher-${{ steps.ver.outputs.v }}.exe" dist/version.json --target "$GITHUB_SHA" --title "Launcher ${{ steps.ver.outputs.v }}" --generate-notes
