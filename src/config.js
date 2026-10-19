@@ -20,6 +20,8 @@ const DEFAULTS = {
   crashUrl: 'https://wow.jedrimos.dedyn.io/launcher/api/crash.php',
   adminUrl: 'https://wow.jedrimos.dedyn.io/launcher/api/admin.php',
   discordClientId: '',
+  discordLocation: true,
+  discordName: true,
   speedLimitMbit: 0,
   lang: 'de',
   autoLogin: true,

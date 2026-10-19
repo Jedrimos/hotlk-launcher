@@ -76,6 +76,13 @@ $('welcomeBtn').onclick = () => { $('welcome').hidden = false; };
 
 // ---------- News ----------
 async function loadNews() { renderNews(await api.news()); }
+// News-Bild laden; bei Fehler (Netz noch nicht bereit, Server kurz weg) mehrfach neu versuchen
+function loadNewsImg(el, url, n) {
+  const im = new Image();
+  im.onload = () => { el.classList.remove('none'); el.innerHTML = ''; el.style.backgroundImage = `url('${url}')`; };
+  im.onerror = () => { if (n < 5 && el.isConnected) setTimeout(() => loadNewsImg(el, url, n + 1), 3000 * (n + 1)); };
+  im.src = n ? url + (url.includes('?') ? '&' : '?') + 'r=' + Date.now() : url;
+}
 function renderNews(list) {
   const box = $('newsList');
   if (!Array.isArray(list) || !list.length) { box.innerHTML = '<div class="empty">Keine Neuigkeiten erreichbar.</div>'; return; }
@@ -84,10 +91,11 @@ function renderNews(list) {
     const img = abs(n.image || n.image_url || '');
     const text = n.text || n.content || n.summary || '';
     return `<article class="news" data-i="${i}" style="cursor:${n.url ? 'pointer' : 'default'}">
-      <div class="img${img ? '' : ' none'}" ${img ? `style="background-image:url('${esc(img)}')"` : ''}>${img ? '' : '<img src="assets/logo.png" alt="">'}</div>
+      <div class="img none"${img ? ` data-src="${esc(img)}"` : ''}><img src="assets/logo.png" alt=""></div>
       <div class="body"><div class="meta">${n.category ? `<span class="tag">${esc(n.category)}</span>` : ''}<span>${esc(n.date || '')}</span></div>
       <h3>${esc(n.title)}</h3><p>${esc(String(text).slice(0, 320))}</p>${n.url ? '<div class="more">Weiterlesen ›</div>' : ''}</div></article>`;
   }).join('');
+  box.querySelectorAll('.img[data-src]').forEach((el) => loadNewsImg(el, el.dataset.src, 0));
   box.querySelectorAll('.news').forEach((el) => el.onclick = () => { const u = list[el.dataset.i].url; if (u) api.openUrl(abs(u)); });
 }
 
@@ -289,7 +297,7 @@ function renderSettings() {
   $('gMeta').textContent = g ? (g.installed ? `Spiel gefunden · Laufwerk ${g.drive}` : 'Hier ist noch kein Spiel (wird beim Installieren angelegt)') + (g.free != null ? ` · ${gb(g.free)} frei` : '') : '';
   $('bMeta').textContent = !st?.base ? '–' : st.base.complete ? `Alle ${st.base.files} Dateien vorhanden.` : `${st.base.missingFiles} Dateien fehlen (${gb(st.base.missingSize)}).`;
   $('optCache').checked = !!cfg.clearCacheOnSwitch;
-  $('optAfter').value = cfg.afterLaunch || 'keep'; $('optBoot').checked = !!cfg.autostart;
+  $('optAfter').value = cfg.afterLaunch || 'keep'; $('optBoot').checked = !!cfg.autostart; $('optDcLoc').checked = cfg.discordLocation !== false; $('optDcName').checked = cfg.discordName !== false;
   const pk = st?.manifest?.packs || {};
   $('packList').innerHTML = Object.entries(pk).map(([id, p]) => {
     const s = st.packs?.[id];
@@ -633,6 +641,8 @@ async function loadReports() {
 }
 $('repReload').onclick = loadReports;
 $('optAfter').onchange = async () => { cfg = await api.setConfig({ afterLaunch: $('optAfter').value }); toast('Gespeichert.'); };
+$('optDcLoc').onchange = async () => { cfg = await api.setConfig({ discordLocation: $('optDcLoc').checked }); toast('Gespeichert.'); };
+$('optDcName').onchange = async () => { cfg = await api.setConfig({ discordName: $('optDcName').checked }); toast('Gespeichert.'); };
 $('optBoot').onchange = async () => { try { await api.setAutostart($('optBoot').checked); cfg = await api.getConfig(); toast('Gespeichert.'); } catch (e) { fail(e); $('optBoot').checked = !$('optBoot').checked; } };
 async function whatsNew() {
   const v = (await api.launcherVersion().catch(() => ({}))).current;
