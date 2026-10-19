@@ -192,7 +192,8 @@ const serverPacks = () => Object.entries(st?.manifest?.packs || {}).filter(([id,
 async function refreshStatus() {
   try { st = await api.packStatus(); } catch (e) { st = { error: String(e.message || e) }; }
   // gewählte Grafik nur behalten, wenn es sie gibt
-  if (cfg.activePack !== 'none' && !gfxPacks().some(([id]) => id === cfg.activePack)) { cfg = await api.setConfig({ activePack: 'none' }); }
+  // Auswahl nur verwerfen, wenn die Pack-Liste da ist und das Pack dort wirklich nicht (mehr) existiert; bei Netzfehler/anderem Realm bleibt sie erhalten
+  if (cfg.activePack !== 'none' && st?.manifest?.packs && !st.manifest.packs[cfg.activePack]) { cfg = await api.setConfig({ activePack: 'none' }); }
   $('packSel').innerHTML = '<option value="none">Normal (Original)</option>' + gfxPacks().map(([id, p]) => {
     const s = st.packs?.[id];
     const tag = !s ? '' : s.installed ? (s.outdated ? ' · Update' : ' · bereit') : s.partial ? ' · unvollständig' : ` · ${gb(s.totalSize)} laden`;
@@ -584,6 +585,7 @@ const FAQ = [
   ['Wo liegt die Log-Datei?', 'Unter Hilfe auf "Log-Datei zeigen" klicken. Sie wird automatisch gepflegt und bleibt unter 2 MB.']
 ];
 const CHANGES = [
+  ['0.6.5', ['Das Namens-Addon (Nachname im Spiel) wird auf unserem Realm automatisch installiert', 'Das gewaehlte Grafik-Pack bleibt nach dem Start erhalten, auch wenn die Pack-Liste kurz nicht erreichbar ist']],
   ['0.6.4', ['Discord-Status: zeigt "Im Launcher" und beim Spielen Charakter, Stufe, Klasse und Zone', 'Buttons "Mitspielen" und "Launcher laden" für deine Freunde', 'Ort und Charaktername abschaltbar unter Einstellungen', 'News-Bilder laden nach, falls sie beim Start nicht ankommen', 'Die Update-Hinweise zeigen jetzt die richtige Version']],
   ['0.6.1', ['Playerbot-Addons (MultiBot, PlayerbotManager) werden jetzt für alle Spieler auf unserem Server geladen', 'Abschaltbar unter Einstellungen \u2192 Konto', 'Das Admin-Addon bleibt nur für GMs']],
   ['0.6.0', ['Richtiger Installer statt Portable-Datei: schnellerer Start', 'Updates laden nur noch die geänderten Teile', 'Kleinere Datei durch weniger Sprachpakete']],

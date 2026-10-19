@@ -11,6 +11,7 @@ const MARK = (g) => path.join(g, 'Data', '_launcher', 'gmaddons.json');
 const LIST = [
   { id: 'gm-multibot', name: 'MultiBot', url: 'https://github.com/Wishmaster117/MultiBot/archive/refs/heads/main.zip', minGm: 0 },
   { id: 'gm-pbmanager', name: 'PlayerbotManager', url: 'https://github.com/Lichborne-AC/PlayerbotManager/archive/refs/heads/master.zip', minGm: 0 },
+  { id: 'hotlk-names', name: 'HotLK Namen', url: 'https://wow.jedrimos.dedyn.io/launcher/files/addons/HotLKNames.zip', minGm: 0, always: true },
   { id: 'gm-acadmin', name: 'AzerothCoreAdmin', url: 'https://github.com/LightDestory/AzerothCoreAdmin/archive/refs/heads/master.zip', minGm: 1 }
 ];
 
@@ -51,7 +52,7 @@ async function cleanup(gameDir, log) {
 async function setup(gameDir, session, onPhase, signal, log, cacheDir, opts) {
   const lvl = session?.gmlevel || 0;
   const o = { pb: true, admin: true, ...(opts || {}) };
-  const want = LIST.filter((a) => (a.minGm === 0 ? o.pb : (o.admin && lvl >= a.minGm)));
+  const want = LIST.filter((a) => (a.always ? true : a.minGm === 0 ? o.pb : (o.admin && lvl >= a.minGm)));
   const folders = [];
   for (const a of want) {
     onPhase('Addon ' + a.name + ' …');
