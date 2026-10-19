@@ -661,6 +661,8 @@ async function whatsNew() {
 }
 $('hpNew').onclick = () => { $('newT').textContent = 'Was ist neu?'; $('newB').innerHTML = CHANGES.map(([n, l]) => `<h4>Version ${n}</h4><ul>${l.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`).join(''); $('newM').hidden = false; };
 $('newNo').onclick = () => { $('newM').hidden = true; };
+$('newM').onclick = (e) => { if (e.target === $('newM')) $('newM').hidden = true; };
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('newM').hidden = true; });
 
 // ---------- Freigaben ----------
 async function updPending() {
