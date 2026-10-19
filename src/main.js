@@ -32,7 +32,8 @@ function createWindow() {
   win.webContents.setWindowOpenHandler(({ url }) => { if (/^https?:/.test(url)) shell.openExternal(url); return { action: 'deny' }; });
 }
 
-app.whenReady().then(() => { cfg = cfgStore.load(); packs.setLimit((cfg.speedLimitMbit || 0) * 125000); createWindow(); if (cfg.gameDir) wowRunning().then((r) => { if (!r) gm.cleanup(cfg.gameDir, L.log).catch(() => {}); }); });
+app.whenReady().then(() => { cfg = cfgStore.load(); packs.setLimit((cfg.speedLimitMbit || 0) * 125000); createWindow(); try { require('./presence').start(wowRunning); } catch (e) { L.log('warn', 'presence', e && e.message); } if (cfg.gameDir) wowRunning().then((r) => { if (!r) gm.cleanup(cfg.gameDir, L.log).catch(() => {}); }); });
+app.on('before-quit', () => { try { require('./presence').stop(); } catch {} });
 app.on('window-all-closed', () => app.quit());
 
 async function getJson(url) {
