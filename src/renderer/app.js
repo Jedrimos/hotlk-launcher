@@ -585,7 +585,7 @@ const FAQ = [
   ['Wo liegt die Log-Datei?', 'Unter Hilfe auf "Log-Datei zeigen" klicken. Sie wird automatisch gepflegt und bleibt unter 2 MB.']
 ];
 const CHANGES = [
-  ['0.6.6', ['Kalender zeigt jetzt Wochenend-Bonus und Wichtel-Adventskalender', 'Der heutige Tag im Kalender sieht wieder normal aus']],
+  ['0.6.6', ['Kalender zeigt jetzt Wochenend-Bonus und Wichtel-Adventskalender', 'Der heutige Tag im Kalender sieht wieder normal aus', 'Neuer Knopf unter Hilfe: Fehler direkt auf GitHub melden']],
   ['0.6.5', ['Das Namens-Addon (Nachname im Spiel) wird auf unserem Realm automatisch installiert', 'Das gewaehlte Grafik-Pack bleibt nach dem Start erhalten, auch wenn die Pack-Liste kurz nicht erreichbar ist']],
   ['0.6.4', ['Discord-Status: zeigt "Im Launcher" und beim Spielen Charakter, Stufe, Klasse und Zone', 'Buttons "Mitspielen" und "Launcher laden" für deine Freunde', 'Ort und Charaktername abschaltbar unter Einstellungen', 'News-Bilder laden nach, falls sie beim Start nicht ankommen', 'Die Update-Hinweise zeigen jetzt die richtige Version']],
   ['0.6.1', ['Playerbot-Addons (MultiBot, PlayerbotManager) werden jetzt für alle Spieler auf unserem Server geladen', 'Abschaltbar unter Einstellungen \u2192 Konto', 'Das Admin-Addon bleibt nur für GMs']],
@@ -605,6 +605,11 @@ async function loadHelp() {
 }
 $('hpCopy').onclick = async () => { await api.copyText(); toast('Systeminformationen kopiert.'); };
 $('hpLog').onclick = () => api.openLog();
+$('hpGh').onclick = async () => {
+  let sys = ''; try { sys = (await api.sysinfo()).map(([k, x]) => `- ${k}: ${x}`).join('\n'); } catch {}
+  const body = `**Was ist passiert?**\n\n\n**Was habe ich erwartet?**\n\n\n**Systeminformationen**\n${sys}`;
+  api.openUrl('https://github.com/Jedrimos/hotlk-launcher/issues/new?body=' + encodeURIComponent(body));
+};
 $('hpSite').onclick = () => api.openUrl(cfg.siteUrl);
 $('hpReg').onclick = openReg;
 $('hpWel').onclick = () => { $('welcome').hidden = false; };
