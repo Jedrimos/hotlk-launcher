@@ -24,11 +24,20 @@ function wowEvents(y) {
 }
 function adventEvents(y) {
   const ev = [];
-  for (let d = 1; d <= 24; d++) ev.push({ kind: 'adv', title: `Adventskalender, Tür ${d}`, start: iso(y, 11, d), end: iso(y, 11, d), text: 'Neue Tür im Adventskalender: Das Rätsel kommt per Post im Spiel.' });
+  for (let d = 1; d <= 24; d++) ev.push({ kind: 'adv', title: `Adventskalender, Tür ${d}`, start: iso(y, 11, d), end: iso(y, 11, d), text: 'Neue Tür im Wichtel-Adventskalender, die Tür öffnet sich im Spiel.' });
+  return ev;
+}
+function bonusEvents(y) {
+  const ev = [];
+  for (let m = 0; m < 12; m++) {
+    if (y === 2026 && m < 10) continue;                                    // erster Bonus: 07.11.2026
+    const d = new Date(y, m, 1), off = (6 - d.getDay() + 7) % 7;
+    ev.push({ kind: 'bonus', title: 'Wochenend-Bonus', start: iso(y, m, 1 + off), end: iso(y, m, 2 + off), text: '4x Erfahrung und Ehre, das ganze Wochenende.' });
+  }
   return ev;
 }
 function allEvents(y) {
-  const ev = [...wowEvents(y - 1), ...wowEvents(y), ...adventEvents(y)];
+  const ev = [...wowEvents(y - 1), ...wowEvents(y), ...adventEvents(y), ...bonusEvents(y)];
   for (const e of calSrv) ev.push({ kind: 'srv', id: e.id, title: e.title, start: e.date, end: e.end || e.date, text: e.text || '', time: e.time });
   return ev;
 }
@@ -51,13 +60,13 @@ function renderCal() {
   for (let k = 0; k < lead; k++) h += '<div class="cd off"></div>';
   for (let d = 1; d <= dim; d++) {
     const s = iso(calY, calM, d), list = onDay(ev, s).sort((a, b) => (a.kind === 'srv' ? -1 : 1) - (b.kind === 'srv' ? -1 : 1));
-    h += `<div class="cd${s === today ? ' today' : ''}${s === calSel ? ' sel' : ''}" data-d="${s}"><b>${d}</b>${list.slice(0, 3).map((e) => `<span class="ce ${e.kind}">${esc(e.title)}</span>`).join('')}${list.length > 3 ? `<span class="muted">+${list.length - 3}</span>` : ''}</div>`;
+    h += `<div class="cd${s === today ? ' now' : ''}${s === calSel ? ' sel' : ''}" data-d="${s}"><b>${d}</b>${list.slice(0, 3).map((e) => `<span class="ce ${e.kind}">${esc(e.title)}</span>`).join('')}${list.length > 3 ? `<span class="muted">+${list.length - 3}</span>` : ''}</div>`;
   }
   $('calGrid').innerHTML = h;
   $('calGrid').querySelectorAll('[data-d]').forEach((c) => c.onclick = () => { calSel = c.dataset.d; renderCal(); });
   const sel = onDay(ev, calSel);
   const dt = calSel.split('-').reverse().join('.');
-  $('calDay').innerHTML = `<h3>${dt}</h3>` + (sel.length ? sel.map((e) => `<div class="li"><div class="t"><span class="ce ${e.kind}">${e.kind === 'srv' ? 'Server' : e.kind === 'adv' ? 'Advent' : 'WoW'}</span> <b>${esc(e.title)}</b>${e.time ? ' · ' + esc(e.time) + ' Uhr' : ''}<div class="muted">${e.start !== e.end ? `${e.start.split('-').reverse().join('.')} bis ${e.end.split('-').reverse().join('.')} · ` : ''}${esc(e.text)}</div></div>${e.kind === 'srv' && session && (session.gmlevel || 0) >= 3 ? `<button data-del="${esc(e.id || '')}" data-t="${esc(e.title)}" data-s="${e.start}">Löschen</button>` : ''}</div>`).join('') : '<div class="muted">Nichts geplant.</div>');
+  $('calDay').innerHTML = `<h3>${dt}</h3>` + (sel.length ? sel.map((e) => `<div class="li"><div class="t"><span class="ce ${e.kind}">${e.kind === 'srv' ? 'Server' : e.kind === 'adv' ? 'Advent' : e.kind === 'bonus' ? 'Bonus' : 'WoW'}</span> <b>${esc(e.title)}</b>${e.time ? ' · ' + esc(e.time) + ' Uhr' : ''}<div class="muted">${e.start !== e.end ? `${e.start.split('-').reverse().join('.')} bis ${e.end.split('-').reverse().join('.')} · ` : ''}${esc(e.text)}</div></div>${e.kind === 'srv' && session && (session.gmlevel || 0) >= 3 ? `<button data-del="${esc(e.id || '')}" data-t="${esc(e.title)}" data-s="${e.start}">Löschen</button>` : ''}</div>`).join('') : '<div class="muted">Nichts geplant.</div>');
   $('calDay').querySelectorAll('[data-del]').forEach((b) => b.onclick = () => delCalEvent(b.dataset.del, b.dataset.t, b.dataset.s));
   $('evDate').value = calSel;
 }
@@ -93,6 +102,7 @@ async function renderToday() {
   const n = new Date(), td = iso(n.getFullYear(), n.getMonth(), n.getDate());
   const ev = allEvents(n.getFullYear()), items = [];
   for (const e of onDay(ev, td).filter((e) => e.kind === 'adv')) items.push(['🎁', e.title, 'Heute neu']);
+  for (const e of onDay(ev, td).filter((e) => e.kind === 'bonus')) items.push(['⚡', e.title, 'läuft bis ' + fmtD(e.end)]);
   for (const e of onDay(ev, td).filter((e) => e.kind === 'srv')) items.push(['📅', e.title, 'Heute' + (e.time ? ' um ' + e.time + ' Uhr' : '')]);
   const nxt = ev.filter((e) => e.kind === 'srv' && e.start > td).sort((a, b) => a.start.localeCompare(b.start))[0];
   if (nxt) items.push(['⏭', nxt.title, 'am ' + fmtD(nxt.start) + (nxt.time ? ', ' + nxt.time + ' Uhr' : '')]);
