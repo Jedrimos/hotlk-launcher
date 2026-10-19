@@ -20,7 +20,7 @@ function activity() {
     assets: { large_image: 'logo', large_text: 'Home of the Lich King' },
     buttons: [
       { label: 'Mitspielen', url: 'https://wow.jedrimos.dedyn.io/' },
-      { label: 'Launcher laden', url: 'https://github.com/Jedrimos/hotlk-launcher/releases/latest' },
+      { label: 'Launcher laden', url: 'https://github.com/Jedrimos/hotlk-launcher/releases/latest/download/HomeOfTheLichKing-Setup.exe' },
     ],
   };
   if (!playing) {

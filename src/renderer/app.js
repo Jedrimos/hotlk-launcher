@@ -584,6 +584,7 @@ const FAQ = [
   ['Wo liegt die Log-Datei?', 'Unter Hilfe auf "Log-Datei zeigen" klicken. Sie wird automatisch gepflegt und bleibt unter 2 MB.']
 ];
 const CHANGES = [
+  ['0.6.4', ['Discord-Status: zeigt "Im Launcher" und beim Spielen Charakter, Stufe, Klasse und Zone', 'Buttons "Mitspielen" und "Launcher laden" für deine Freunde', 'Ort und Charaktername abschaltbar unter Einstellungen', 'News-Bilder laden nach, falls sie beim Start nicht ankommen', 'Die Update-Hinweise zeigen jetzt die richtige Version']],
   ['0.6.1', ['Playerbot-Addons (MultiBot, PlayerbotManager) werden jetzt für alle Spieler auf unserem Server geladen', 'Abschaltbar unter Einstellungen \u2192 Konto', 'Das Admin-Addon bleibt nur für GMs']],
   ['0.6.0', ['Richtiger Installer statt Portable-Datei: schnellerer Start', 'Updates laden nur noch die geänderten Teile', 'Kleinere Datei durch weniger Sprachpakete']],
   ['0.5.1', ['Update-Anzeige und automatisches Update über GitHub geprüft']],
