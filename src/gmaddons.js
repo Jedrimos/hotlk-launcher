@@ -11,7 +11,7 @@ const MARK = (g) => path.join(g, 'Data', '_launcher', 'gmaddons.json');
 const LIST = [
   { id: 'gm-multibot', name: 'MultiBot', url: 'https://github.com/Wishmaster117/MultiBot/archive/refs/heads/main.zip', minGm: 0 },
   { id: 'gm-pbmanager', name: 'PlayerbotManager', url: 'https://github.com/Lichborne-AC/PlayerbotManager/archive/refs/heads/master.zip', minGm: 0 },
-  { id: 'hotlk', name: 'HotLK', url: 'https://wow.jedrimos.dedyn.io/launcher/files/addons/HotLK.zip', minGm: 0, always: true },
+  { id: 'hotlk', name: 'HotLK', url: 'https://wow.jedrimos.dedyn.io/launcher/files/addons/HotLK.zip', minGm: 0, always: true, nocache: true },
   { id: 'gm-acadmin', name: 'AzerothCoreAdmin', url: 'https://github.com/LightDestory/AzerothCoreAdmin/archive/refs/heads/master.zip', minGm: 1 }
 ];
 
@@ -57,7 +57,7 @@ async function setup(gameDir, session, onPhase, signal, log, cacheDir, opts) {
   for (const a of want) {
     onPhase('Addon ' + a.name + ' …');
     try {
-      const names = await addons.install(gameDir, cacheDir ? { ...a, cacheZip: path.join(cacheDir, 'gmzip-' + a.id + '.zip') } : a, () => {}, signal);
+      const names = await addons.install(gameDir, cacheDir && !a.nocache ? { ...a, cacheZip: path.join(cacheDir, 'gmzip-' + a.id + '.zip') } : a, () => {}, signal);
       for (const n of names) {
         guardFolder(path.join(gameDir, 'Interface', 'AddOns', n));
         if (!folders.includes(n)) folders.push(n);
