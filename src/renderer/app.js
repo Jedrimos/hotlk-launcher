@@ -575,7 +575,7 @@ window.addEventListener('error', (e) => api.logError('error', `${e.message} @ ${
 window.addEventListener('unhandledrejection', (e) => api.logError('error', 'Promise: ' + (e.reason && e.reason.message || e.reason)));
 const FAQ = [
   ['Das Spiel startet nicht oder bleibt hängen', 'Öffne den Reiter Werkzeuge und klicke auf "Jetzt prüfen". Der Launcher findet bekannte Probleme und behebt sie per Klick. Hilft das nicht, unter Einstellungen "Alles prüfen & reparieren" wählen. Läuft WoW noch im Hintergrund (Task-Manager), beende es zuerst.'],
-  ['Ich komme nicht ins Spiel / "Server nicht erreichbar"', 'Oben im Launcher siehst du, ob der Server online ist. Ist er online, prüfe unter Hilfe die Systeminformationen und melde den Fehler mit angehängter Diagnose. Vergiss nicht, dass der Server täglich um 05:00 Uhr kurz neu startet.'],
+  ['Ich komme nicht ins Spiel / "Server nicht erreichbar"', 'Oben im Launcher siehst du, ob der Server online ist. Ist er online, prüfe unter Hilfe die Systeminformationen und melde den Fehler mit angehängter Diagnose. Vergiss nicht, dass der Server sonntags um 05:00 Uhr kurz neu startet.'],
   ['Wie wechsle ich zwischen Normal und HD?', 'Unten links im Launcher bei "Grafik" das Pack wählen. Fehlt es noch, lädt der Launcher es herunter. Danach auf SPIELEN klicken.'],
   ['Wie installiere ich Addons?', 'Reiter Addons, Katalog öffnen, Klassenfilter nutzen und auf Installieren klicken. Angeboten werden nur Addons für 3.3.5a. Mit "Mehr Infos" kommst du zur Seite des Addons.'],
   ['Ich habe mein Passwort vergessen', 'Auf der Webseite gibt es "Passwort vergessen". Einen neuen Zugang kannst du auch über einen Game Master bekommen.'],
