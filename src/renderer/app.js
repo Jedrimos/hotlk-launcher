@@ -125,6 +125,7 @@ async function refreshRealms() {
   fillRealms();
   const s = realmInfo[cfg.selectedRealm];
   $('srv').querySelector('.dot').className = 'dot ' + (s ? (s.up ? 'up' : 'down') : '');
+  { const w = $('playWarn'); if (w) w.hidden = !(s && !s.up); }
   $('srvTxt').textContent = !s ? '…' : !s.up ? 'Offline' : s.online != null ? `${s.online} online` : 'Online';
 }
 $('realmSel').onchange = async () => { cfg = await api.setConfig({ selectedRealm: +$('realmSel').value }); refreshRealms(); await refreshStatus(); };

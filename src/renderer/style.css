@@ -131,3 +131,5 @@ textarea{width:100%;background:#0d151e;border:1px solid var(--line);border-radiu
 .snav{display:flex;gap:8px;margin-bottom:14px}.snav button.on{border-color:var(--gold);color:var(--gold)}
 
 .dlg{max-height:88vh}.dlg.wide .chg,#newB{overflow-y:auto;min-height:0;flex:1}.dlg .row.end{flex-shrink:0}
+
+.playwarn{margin-top:8px;color:#ff8a80;font-size:12px;text-align:center}
