@@ -192,6 +192,16 @@ function wowRunning() {
   });
 }
 ipcMain.handle('game:running', wowRunning);
+// Anzahl laufender WoW-Clients (fuer den zweiten Client)
+function wowCount() {
+  return new Promise((resolve) => {
+    if (process.platform !== 'win32') return resolve(0);
+    execFile('tasklist', ['/FI', 'IMAGENAME eq Wow.exe', '/NH', '/FO', 'CSV'], { windowsHide: true }, (err, out) => {
+      resolve(err ? 0 : ((out || '').match(/"Wow\.exe"/gi) || []).length);
+    });
+  });
+}
+ipcMain.handle('game:count', wowCount);
 
 // ---------- Standard-Ordner für eine Neuinstallation ----------
 ipcMain.handle('game:defaultTarget', async () => {
@@ -346,11 +356,20 @@ ipcMain.handle('addons:install', async (_e, id) => {
   finally { abort = null; }
 });
 
-ipcMain.handle('game:play', async () => {
-  if (await wowRunning()) throw new Error('WoW läuft bereits. Bitte das offene Spiel benutzen oder beenden.');
+ipcMain.handle('game:play', async (_e, second) => {
+  const already = await wowCount();
+  if (already >= 2) throw new Error('Es laufen bereits zwei WoW-Clients.');
+  if (already && !second) throw new Error('WoW läuft bereits. Bitte das offene Spiel benutzen oder beenden.');
   if (!hasGame(cfg.gameDir)) throw new Error('Bitte zuerst den WoW-Ordner wählen.');
   const realm = realmOf();
   if (!realm) throw new Error('Kein Realm gewählt.');
+  if (already) {
+    // Zweiter Client: Packs und Addons sind vom ersten schon eingerichtet, nichts umstellen
+    writeRealmlist(cfg.gameDir, realm.realmlist);
+    spawn(path.join(cfg.gameDir, 'Wow.exe'), [], { cwd: cfg.gameDir, detached: true, stdio: 'ignore' }).unref();
+    L.log('info', 'Zweiter WoW-Client gestartet', realm.name);
+    return true;
+  }
   const { manifest } = await loadManifest();
   let want = [];
   if (manifest) {

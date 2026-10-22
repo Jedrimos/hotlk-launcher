@@ -3,7 +3,7 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 const gb = (b) => (b >= 1e9 ? (b / 1e9).toFixed(2) + ' GB' : (b / 1e6).toFixed(0) + ' MB');
 const CLASSES = { druid: ['Druide', '#ff7d0a'], hunter: ['Jäger', '#abd473'], mage: ['Magier', '#69ccf0'], paladin: ['Paladin', '#f58cba'], priest: ['Priester', '#ffffff'], rogue: ['Schurke', '#fff569'], shaman: ['Schamane', '#0070de'], warlock: ['Hexenmeister', '#9482c9'], warrior: ['Krieger', '#c79c6e'], deathknight: ['Todesritter', '#c41f3b'] };
 
-let cfg, st = null, session = null, busy = false, running = false;
+let cfg, st = null, session = null, busy = false, running = false, runN = 0;
 let addonsInst = [], addonsCat = [], aSub = 'inst', aClass = '', realmInfo = [], updIds = [];
 
 // ---------- Sprache ----------
@@ -57,8 +57,8 @@ async function init() {
   api.onData((n, d) => { if (n === 'news') renderNews(d); if (n === 'serverinfo') { refreshBanner(); if (typeof calSrv !== 'undefined') calSrv = ((d && d.events) || []).filter((e) => e && e.title && /^\d{4}-\d{2}-\d{2}$/.test(e.date || '')); if (typeof renderToday === 'function') renderToday(); if (typeof renderCal === 'function' && $('v-cal').classList.contains('on')) renderCal(); } if (n === 'serverinfo' && $('v-server').classList.contains('on')) loadServer(); if (n === 'serverinfo' && typeof loadCal === 'function' && $('v-cal').classList.contains('on')) loadCal(); });
   api.restore().then((r) => { if (r?.session) { session = r.session; renderAuthChips(); greet(); } if (r?.user) $('lUser').value = r.user; });
   loadNews(); refreshStatus(); refreshRealms(); checkLauncher();
-  setInterval(refreshRealms, 60000); setInterval(() => { api.news(); api.serverInfo(); }, 180000); setInterval(checkLauncher, 1800000); setInterval(async () => { running = await api.isRunning(); renderPlay(); }, 5000);
-  api.isRunning().then((r) => { running = r; renderPlay(); });
+  setInterval(refreshRealms, 60000); setInterval(() => { api.news(); api.serverInfo(); }, 180000); setInterval(checkLauncher, 1800000); setInterval(async () => { runN = await api.runCount(); running = runN > 0; renderPlay(); }, 5000);
+  api.runCount().then((n) => { runN = n; running = n > 0; renderPlay(); });
   if (!cfg.gameDir) { const d = await api.detectGames(); if (d.length) { await api.setGame(d[0].dir); cfg = await api.getConfig(); } }
   await refreshStatus();
   if (!cfg.welcomeSeen) $('welcome').hidden = false;
@@ -224,8 +224,8 @@ function renderPlay() {
   const b = $('play'), td = todo();
   b.disabled = busy;
   const K = { install: ['play.install', 'SPIEL INSTALLIEREN'], base: ['play.update', 'SPIEL AKTUALISIEREN'], packs: ['play.packs', 'PACK LADEN'], play: ['play.play', 'SPIELEN'], error: ['play.retry', 'NEU VERSUCHEN'] }[td.kind];
-  b.textContent = running && td.kind === 'play' ? t('play.running', 'SPIEL LÄUFT') : t(K[0], K[1]);
-  if (running && td.kind === 'play') b.disabled = true;
+  b.textContent = running && td.kind === 'play' ? (runN >= 2 ? 'ZWEI CLIENTS LAUFEN' : 'ZWEITEN CLIENT STARTEN') : t(K[0], K[1]);
+  if (running && td.kind === 'play' && runN >= 2) b.disabled = true;
 }
 $('play').onclick = async () => {
   if (busy) return;
@@ -241,10 +241,10 @@ $('play').onclick = async () => {
       const pf = await api.preflight();
       if (pf.errors.length) { toast(pf.errors[0], true); return; }
       if (pf.warnings.length && !confirm(pf.warnings.join('\n\n') + '\n\nTrotzdem starten?')) return;
-      setBusy(true); showProg('Starte …', 0, 0); await api.play(); running = true; toast('Viel Spaß!');
+      setBusy(true); showProg('Starte …', 0, 0); await api.play(runN > 0); running = true; runN++; toast('Viel Spaß!');
     }
   } catch (e) { if (!/abbruch|abgebrochen|abort/i.test(String(e))) fail(e); else toast('Abgebrochen.'); }
-  finally { setBusy(false); await refreshStatus(); running = await api.isRunning(); renderPlay(); }
+  finally { setBusy(false); await refreshStatus(); runN = await api.runCount(); running = runN > 0; renderPlay(); }
 };
 $('cancel').onclick = () => api.cancel();
 
@@ -586,6 +586,7 @@ const FAQ = [
   ['Wo liegt die Log-Datei?', 'Unter Hilfe auf "Log-Datei zeigen" klicken. Sie wird automatisch gepflegt und bleibt unter 2 MB.']
 ];
 const CHANGES = [
+  ['0.6.9', ['Zweiter Client: Ist WoW schon offen, startet der Knopf jetzt einen zweiten Client (z. B. für einen zweiten Account)', 'Beim zweiten Client meldest du dich selbst an']],
   ['0.6.7', ['Das Was-ist-neu-Fenster lässt sich wieder schließen: scrollbar, Esc oder Klick daneben']],
   ['0.6.6', ['Kalender zeigt jetzt Wochenend-Bonus und Wichtel-Adventskalender', 'Der heutige Tag im Kalender sieht wieder normal aus', 'Neuer Knopf unter Hilfe: Fehler direkt auf GitHub melden']],
   ['0.6.5', ['Das Namens-Addon (Nachname im Spiel) wird auf unserem Realm automatisch installiert', 'Das gewaehlte Grafik-Pack bleibt nach dem Start erhalten, auch wenn die Pack-Liste kurz nicht erreichbar ist']],
