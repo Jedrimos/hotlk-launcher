@@ -360,6 +360,7 @@ ipcMain.handle('game:play', async (_e, second) => {
     // Zweiter Client: Packs und Addons sind vom ersten schon eingerichtet, nichts umstellen
     writeRealmlist(cfg.gameDir, realm.realmlist);
     const exe2 = realm.key === 'home' ? exepatch.ensure(cfg.gameDir, L.log) : null;
+    if (realm.key === 'home' && !exe2) throw new Error('Die Wow.exe ist nicht der erwartete Client (3.3.5a, Build 12340).');
     spawn(exe2 || path.join(cfg.gameDir, 'Wow.exe'), [], { cwd: cfg.gameDir, detached: true, stdio: 'ignore' }).unref();
     L.log('info', 'Zweiter WoW-Client gestartet', realm.name);
     return true;
@@ -379,24 +380,12 @@ ipcMain.handle('game:play', async (_e, second) => {
     }
     want = ids;
   }
-  // Eigene Login-Oberfläche (Nachname): nur auf unserem Realm und nur, wenn die gepatchte Exe erzeugt werden konnte
+  // Patch 4 enthält unsere Login-Oberfläche (Nachname). Der Client lädt sie nur mit der gepatchten Exe (siehe exepatch.js).
   let hotlkExe = null;
-  let applyManifest = manifest || { packs: {} };
-  if (realm.key === 'home' && manifest && manifest.glue && Array.isArray(manifest.glue.files) && manifest.glue.files.length) {
+  const applyManifest = manifest || { packs: {} };
+  if (realm.key === 'home') {
     hotlkExe = exepatch.ensure(cfg.gameDir, L.log);
-    if (hotlkExe) {
-      applyManifest = { ...manifest, packs: { ...manifest.packs, glue: { name: 'Login-Oberfläche', kind: 'server', ...manifest.glue } } };
-      try {
-        const gst = await packs.status(cfg.gameDir, applyManifest);
-        if (!gst.packs.glue.installed) {
-          win.webContents.send('game:phase', 'Lade Login-Oberfläche …');
-          abort = new AbortController();
-          try { await packs.download(cfg.gameDir, 'glue', applyManifest, (p) => win.webContents.send('packs:progress', p), abort.signal); }
-          finally { abort = null; }
-        }
-        want = want.concat(['glue']);
-      } catch (e) { L.log('warn', 'Login-Oberfläche nicht geladen', e.message); hotlkExe = null; applyManifest = manifest; }
-    }
+    if (!hotlkExe) throw new Error('Die Wow.exe ist nicht der erwartete Client (3.3.5a, Build 12340). Bitte unter „Spieldateien“ alles prüfen & reparieren.');
   }
   const phase = (t) => win.webContents.send('game:phase', t);
   // Admin-Addons parallel zum Pack-Umstellen vorbereiten
