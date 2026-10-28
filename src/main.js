@@ -4,6 +4,7 @@ const fs = require('fs');
 const { spawn, execFile } = require('child_process');
 const cfgStore = require('./config');
 const packs = require('./packs');
+const exepatch = require('./exepatch');
 const detect = require('./detect');
 const L = require('./log');
 const gm = require('./gmaddons');
@@ -183,24 +184,16 @@ function autoTypeLogin(user, pass, delay) {
 }
 
 // ---------- Läuft WoW schon? ----------
-function wowRunning() {
-  return new Promise((resolve) => {
-    if (process.platform !== 'win32') return resolve(false);
-    execFile('tasklist', ['/FI', 'IMAGENAME eq Wow.exe', '/NH', '/FO', 'CSV'], { windowsHide: true }, (err, out) => {
-      resolve(!err && /"Wow\.exe"/i.test(out || ''));
-    });
+const tasklistCount = (name) => new Promise((resolve) => {
+  if (process.platform !== 'win32') return resolve(0);
+  execFile('tasklist', ['/FI', 'IMAGENAME eq ' + name, '/NH', '/FO', 'CSV'], { windowsHide: true }, (err, out) => {
+    resolve(err ? 0 : ((out || '').match(new RegExp('"' + name.replace(/[.]/g, '\\.') + '"', 'gi')) || []).length);
   });
-}
+});
+function wowRunning() { return wowCount().then((n) => n > 0); }
 ipcMain.handle('game:running', wowRunning);
 // Anzahl laufender WoW-Clients (fuer den zweiten Client)
-function wowCount() {
-  return new Promise((resolve) => {
-    if (process.platform !== 'win32') return resolve(0);
-    execFile('tasklist', ['/FI', 'IMAGENAME eq Wow.exe', '/NH', '/FO', 'CSV'], { windowsHide: true }, (err, out) => {
-      resolve(err ? 0 : ((out || '').match(/"Wow\.exe"/gi) || []).length);
-    });
-  });
-}
+async function wowCount() { return (await tasklistCount('Wow.exe')) + (await tasklistCount('Wow-HotLK.exe')); }
 ipcMain.handle('game:count', wowCount);
 
 // ---------- Standard-Ordner für eine Neuinstallation ----------
@@ -366,7 +359,8 @@ ipcMain.handle('game:play', async (_e, second) => {
   if (already) {
     // Zweiter Client: Packs und Addons sind vom ersten schon eingerichtet, nichts umstellen
     writeRealmlist(cfg.gameDir, realm.realmlist);
-    spawn(path.join(cfg.gameDir, 'Wow.exe'), [], { cwd: cfg.gameDir, detached: true, stdio: 'ignore' }).unref();
+    const exe2 = realm.key === 'home' ? exepatch.ensure(cfg.gameDir, L.log) : null;
+    spawn(exe2 || path.join(cfg.gameDir, 'Wow.exe'), [], { cwd: cfg.gameDir, detached: true, stdio: 'ignore' }).unref();
     L.log('info', 'Zweiter WoW-Client gestartet', realm.name);
     return true;
   }
@@ -385,6 +379,25 @@ ipcMain.handle('game:play', async (_e, second) => {
     }
     want = ids;
   }
+  // Eigene Login-Oberfläche (Nachname): nur auf unserem Realm und nur, wenn die gepatchte Exe erzeugt werden konnte
+  let hotlkExe = null;
+  let applyManifest = manifest || { packs: {} };
+  if (realm.key === 'home' && manifest && manifest.glue && Array.isArray(manifest.glue.files) && manifest.glue.files.length) {
+    hotlkExe = exepatch.ensure(cfg.gameDir, L.log);
+    if (hotlkExe) {
+      applyManifest = { ...manifest, packs: { ...manifest.packs, glue: { name: 'Login-Oberfläche', kind: 'server', ...manifest.glue } } };
+      try {
+        const gst = await packs.status(cfg.gameDir, applyManifest);
+        if (!gst.packs.glue.installed) {
+          win.webContents.send('game:phase', 'Lade Login-Oberfläche …');
+          abort = new AbortController();
+          try { await packs.download(cfg.gameDir, 'glue', applyManifest, (p) => win.webContents.send('packs:progress', p), abort.signal); }
+          finally { abort = null; }
+        }
+        want = want.concat(['glue']);
+      } catch (e) { L.log('warn', 'Login-Oberfläche nicht geladen', e.message); hotlkExe = null; applyManifest = manifest; }
+    }
+  }
   const phase = (t) => win.webContents.send('game:phase', t);
   // Admin-Addons parallel zum Pack-Umstellen vorbereiten
   let gmJob = Promise.resolve();
@@ -395,14 +408,14 @@ ipcMain.handle('game:play', async (_e, second) => {
   } else gmJob = gm.cleanup(cfg.gameDir, L.log).catch(() => {});
   const t0 = Date.now();
   abort = new AbortController();
-  try { await packs.applySet(cfg.gameDir, manifest || { packs: {} }, want, cfg.clearCacheOnSwitch, phase, abort.signal); }
+  try { await packs.applySet(cfg.gameDir, applyManifest, want, cfg.clearCacheOnSwitch, phase, abort.signal); }
   catch (e) { await gmJob; await gm.cleanup(cfg.gameDir, L.log).catch(() => {}); throw e; }
   finally { const was = abort && abort.signal.aborted; abort = null; if (was) { await gmJob; await gm.cleanup(cfg.gameDir, L.log).catch(() => {}); throw new Error('Start abgebrochen.'); } }
   phase('Starte WoW … (Packs umgestellt in ' + ((Date.now() - t0) / 1000).toFixed(1) + ' s)');
   await gmJob;
   writeRealmlist(cfg.gameDir, realm.realmlist);
-  spawn(path.join(cfg.gameDir, 'Wow.exe'), [], { cwd: cfg.gameDir, detached: true, stdio: 'ignore' }).unref();
-  L.log('info', 'WoW gestartet', realm.name, 'Pack', cfg.activePack);
+  spawn(hotlkExe || path.join(cfg.gameDir, 'Wow.exe'), [], { cwd: cfg.gameDir, detached: true, stdio: 'ignore' }).unref();
+  L.log('info', 'WoW gestartet', realm.name, 'Pack', cfg.activePack, hotlkExe ? 'mit eigener Login-Oberfläche' : '');
   afterLaunch();
   if (cfg.autoLogin && session && sessionPass) autoTypeLogin(session.username, sessionPass, cfg.autoDelay || 9);
   setTimeout(() => discordSet(true), 8000);
