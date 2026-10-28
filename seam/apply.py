@@ -3,8 +3,8 @@ L='/root/sahtoutcms/cms/launcher'
 data=open('/root/seam_p4.MPQ','rb').read()
 dbc=open('/root/seam_TaxiPathNode.dbc','rb').read()
 sha=hashlib.sha256(data).hexdigest()
-assert sha.startswith('ea9662484dab34eb'),sha
-B='/root/zum-loeschen/seam'
+assert sha.startswith('ffb589430ead01dd'),sha
+B='/root/zum-loeschen/seam2'
 os.makedirs(B,exist_ok=True)
 dst=L+'/files/heimat/Data/deDE/patch-deDE-4.MPQ'
 shutil.copy(dst,B+'/patch-deDE-4.MPQ')
