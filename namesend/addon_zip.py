@@ -6,6 +6,6 @@ zi=zipfile.ZipFile(Z); items=[(i.filename,zi.read(i.filename)) for i in zi.infol
 out=io.BytesIO(); zo=zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED)
 for fn,d in items:
     if fn=='HotLK/Names.lua': d=new
-    if fn=='HotLK/HotLK.toc': d=d.replace(b'## Version: 3.9.2',b'## Version: 3.9.4')
+    if fn=='HotLK/HotLK.toc': d=d.replace(b'## Version: X')
     zo.writestr(fn,d)
 zo.close(); open(Z,'wb').write(out.getvalue()); print('zip ok')

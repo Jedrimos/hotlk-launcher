@@ -118,10 +118,13 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
   if not unit or not UnitIsPlayer(unit) then return end
   local n = UnitName(unit)
   local t = full(n, cache[n])
+  local dd = cache[n]
   if t then
     local line = GameTooltipTextLeft1
     local old = line:GetText() or n
-    line:SetText((old:gsub(n, t, 1)))
+    if not (dd and dd.last and dd.last ~= "" and old:find(dd.last, 1, true)) then
+      line:SetText((old:gsub(n, t, 1)))
+    end
   end
 end)
 
