@@ -84,7 +84,7 @@ local function lastByName(name)
   end
   return g and HotLK_Last(g) or ""
 end
-local dbg = 3
+local dbg = 60
 local function onName(ev, pk, pl)
   local ok, a, b = pcall(function()
     if not HotLK_Last then return end
@@ -106,6 +106,7 @@ local function onName(ev, pk, pl)
     if dbg > 0 then dbg = dbg - 1; print("[namesend] guid=" .. tostring(g) .. " type=" .. type(g) .. " name=" .. tostring(name)) end
     if name:find(" ", 1, true) then return end
     local last = HotLK_Last(low)
+    if dbg > 0 then print("[namesend] last(" .. tostring(low) .. ")=" .. tostring(last)) end
     if (not last or last == "") then last = lastByName(name) end
     if not last or last == "" then return end
     local n = CreatePacket(81, 64)
@@ -115,6 +116,7 @@ local function onName(ev, pk, pl)
     n:WriteString(name .. " " .. last)
     n:WriteString(realm)
     n:WriteUByte(race); n:WriteUByte(gender); n:WriteUByte(class); n:WriteUByte(decl)
+    print("[namesend] ersetze " .. name .. " -> " .. last .. " pl=" .. tostring(pl))
     if not pl then return end
     pl:SendPacket(n)
     return false
