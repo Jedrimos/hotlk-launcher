@@ -27,7 +27,7 @@ local function onCreateReq(ev, pk, pl)
   if not ok then print("[namesend] Create-Fehler: " .. tostring(a)); return end
   if a == false then return false, b end
 end
-RegisterPacketEvent(54, RECV, onCreateReq)
+-- RegisterPacketEvent(54, RECV, onCreateReq)  -- Client lehnt "~" im Namen ab
 
 RegisterPlayerEvent(1, function(ev, p)
   nameGuid[p:GetName()] = nil
@@ -73,7 +73,7 @@ local function onEnum(ev, pk, pl)
   if not ok then print("[namesend] Enum-Fehler: " .. tostring(a)); return end
   if a == false then return false, b end
 end
-RegisterPacketEvent(59, SEND, onEnum)
+-- RegisterPacketEvent(59, SEND, onEnum)  -- Hook kann kein neues Paket senden (kein Player)
 
 local function lastByName(name)
   local g = nameGuid[name]
@@ -115,10 +115,12 @@ local function onName(ev, pk, pl)
     n:WriteString(name .. " " .. last)
     n:WriteString(realm)
     n:WriteUByte(race); n:WriteUByte(gender); n:WriteUByte(class); n:WriteUByte(decl)
-    return false, n
+    if not pl then return end
+    pl:SendPacket(n)
+    return false
   end)
   if not ok then print("[namesend] Fehler: " .. tostring(a)); return end
-  if a == false then return false, b end
+  if a == false then return false end
 end
 RegisterPacketEvent(81, SEND, onName)
 print("[hotlk_namesend.lua] geladen")
