@@ -11,8 +11,8 @@ local function onCreateReq(ev, pk, pl)
   local ok, a, b = pcall(function()
     local size = pk:GetSize()
     local name = pk:ReadString()
+    print("[namesend] Create: name='" .. name .. "' size=" .. tostring(size))
     if not name:find("~", 1, true) then return end
-    if size ~= #name + 1 + 9 then return end
     local rest = {}
     for i = 1, 9 do rest[i] = pk:ReadUByte() end
     local first, last = name:match("^([^~]*)~(.*)$")
@@ -88,7 +88,15 @@ local dbg = 3
 local function onName(ev, pk, pl)
   local ok, a, b = pcall(function()
     if not HotLK_Last then return end
-    local g = pk:ReadPackedGUID()
+    local mask = pk:ReadUByte()
+    local gb, low = {}, 0
+    for i = 0, 7 do
+      if mask % (2 ^ (i + 1)) >= 2 ^ i then
+        local b = pk:ReadUByte(); gb[#gb + 1] = b
+        if i < 4 then low = low + b * 256 ^ i end
+      end
+    end
+    local g = low
     local unk = pk:ReadUByte()
     if unk ~= 0 then return end
     local name = pk:ReadString()
@@ -97,10 +105,12 @@ local function onName(ev, pk, pl)
     local decl = pk:ReadUByte()
     if dbg > 0 then dbg = dbg - 1; print("[namesend] guid=" .. tostring(g) .. " type=" .. type(g) .. " name=" .. tostring(name)) end
     if name:find(" ", 1, true) then return end
-    local last = lastByName(name)
+    local last = HotLK_Last(low)
+    if (not last or last == "") then last = lastByName(name) end
     if not last or last == "" then return end
     local n = CreatePacket(81, 64)
-    n:WritePackedGUID(g)
+    n:WriteUByte(mask)
+    for i = 1, #gb do n:WriteUByte(gb[i]) end
     n:WriteUByte(0)
     n:WriteString(name .. " " .. last)
     n:WriteString(realm)
