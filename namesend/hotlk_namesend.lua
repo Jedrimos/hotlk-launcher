@@ -5,6 +5,7 @@
 --  4) SMSG_NAME_QUERY_RESPONSE (0x051): Nachname ueber Kopf, Chat, Gruppe, Tooltip
 local RECV, SEND = 5, 7
 local pending = {}
+local nameGuid = {}
 
 local function onCreateReq(ev, pk, pl)
   local ok, a, b = pcall(function()
@@ -29,6 +30,7 @@ end
 RegisterPacketEvent(54, RECV, onCreateReq)
 
 RegisterPlayerEvent(1, function(ev, p)
+  nameGuid[p:GetName()] = nil
   local last = pending[p:GetName():lower()]
   if last and HotLK_SetLastDirect then
     pending[p:GetName():lower()] = nil
@@ -73,6 +75,15 @@ local function onEnum(ev, pk, pl)
 end
 RegisterPacketEvent(59, SEND, onEnum)
 
+local function lastByName(name)
+  local g = nameGuid[name]
+  if g == nil then
+    local q = CharDBQuery("SELECT guid FROM characters WHERE name='" .. name:gsub("'", "''") .. "'")
+    g = q and q:GetUInt32(0) or false
+    nameGuid[name] = g
+  end
+  return g and HotLK_Last(g) or ""
+end
 local dbg = 3
 local function onName(ev, pk, pl)
   local ok, a, b = pcall(function()
@@ -86,7 +97,7 @@ local function onName(ev, pk, pl)
     local decl = pk:ReadUByte()
     if dbg > 0 then dbg = dbg - 1; print("[namesend] guid=" .. tostring(g) .. " type=" .. type(g) .. " name=" .. tostring(name)) end
     if name:find(" ", 1, true) then return end
-    local last = HotLK_Last(tonumber(g))
+    local last = lastByName(name)
     if not last or last == "" then return end
     local n = CreatePacket(81, 64)
     n:WritePackedGUID(g)
