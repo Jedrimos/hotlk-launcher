@@ -242,7 +242,13 @@ async function applySet(gameDir, manifest, ids, clearCacheToo, onPhase = () => {
   const same = st.active.length === ids.length && st.active.every((v, i) => v === ids[i]);
   let intact = same;
   if (same) {   // Links noch da?
-    for (const id of ids) for (const rel of st.linked[id] || []) if (!fs.existsSync(path.join(gameDir, safeRel(rel)))) intact = false;
+    for (const id of ids) for (const rel of st.linked[id] || []) {
+      // Nicht nur "ist da", sondern "ist wirklich die aktuelle Pack-Datei" (sonst bleibt nach einem Pack-Update die alte Version liegen)
+      try {
+        const a = fs.statSync(path.join(gameDir, safeRel(rel))), b = fs.statSync(path.join(packDir(gameDir, id), safeRel(rel)));
+        if (a.size !== b.size || !(a.ino === b.ino || Math.abs(a.mtimeMs - b.mtimeMs) < 2000)) intact = false;
+      } catch { intact = false; }
+    }
   }
   if (same && intact) return false;                     // nichts zu tun
   onPhase('Alte Packs werden ausgehängt …');
@@ -268,7 +274,7 @@ async function applySet(gameDir, manifest, ids, clearCacheToo, onPhase = () => {
         if (!fs.existsSync(bak)) await fsp.rename(dst, bak); else await fsp.rm(dst, { force: true });
       } catch {}
       onPhase(`Pack „${pack.name || id}“ wird eingehängt: ${path.basename(rel)} …`);
-      try { await fsp.link(src, dst); } catch { onPhase(`Kopiere ${path.basename(rel)} (dieses Laufwerk kann keine Verknüpfungen, das dauert) …`); await fsp.copyFile(src, dst); }
+      try { await fsp.link(src, dst); } catch { onPhase(`Kopiere ${path.basename(rel)} (dieses Laufwerk kann keine Verknüpfungen, das dauert) …`); await fsp.copyFile(src, dst); try { const t = fs.statSync(src); await fsp.utimes(dst, t.atime, t.mtime); } catch {} }
       linkedAll[id].push(rel);
       if (signal?.aborted) { await undo(); throw new Error('Abgebrochen'); }
     }
