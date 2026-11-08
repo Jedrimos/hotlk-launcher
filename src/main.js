@@ -350,6 +350,9 @@ ipcMain.handle('addons:install', async (_e, id) => {
 });
 
 ipcMain.handle('game:play', async (_e, second) => {
+  // Ohne aktuellen Launcher kein Spielstart (nur wenn der Update-Server erreichbar ist)
+  try { const v = await getVersionJson(); if (v && v.version && isNewer(v.version, app.getVersion())) throw new Error('LAUNCHER_OLD'); }
+  catch (e) { if (e.message === 'LAUNCHER_OLD') throw new Error('Bitte zuerst den Launcher aktualisieren (neue Version ' + (await getVersionJson().catch(() => ({}))).version + ').'); }
   const already = await wowCount();
   if (already >= 2) throw new Error('Es laufen bereits zwei WoW-Clients.');
   if (already && !second) throw new Error('WoW läuft bereits. Bitte das offene Spiel benutzen oder beenden.');

@@ -112,6 +112,7 @@ async function checkLauncher() {
   vb.title = v.newer ? 'Neue Version verfügbar, klicken zum Aktualisieren' : (v.latest ? 'Launcher ist aktuell' : 'Launcher-Version');
   vb.onclick = () => { if (v.newer) $('banner').click(); else toast(v.latest ? 'Du hast die neueste Version (' + v.current + ').' : 'Version ' + v.current); };
   if (v.newer) { const b = $('banner'); b.hidden = false; b.textContent = `Neue Launcher-Version ${v.latest} verfügbar – hier klicken zum automatischen Update.`; b.onclick = async () => { b.textContent = 'Lade Update …'; api.onUpdateProgress((p) => { b.textContent = 'Lade Update … ' + (p.total ? Math.round(p.done / p.total * 100) + ' %' : gb(p.done)); }); try { await api.updateLauncher(); } catch (e) { b.textContent = 'Update fehlgeschlagen.'; fail(e); } }; }
+  renderPlay();
 }
 function fillRealms() {
   $('realmSel').innerHTML = cfg.realms.map((r, i) => {
@@ -211,6 +212,7 @@ $('packSel').onchange = async () => { cfg = await api.setConfig({ activePack: $(
 
 // Was muss vor dem Spielen noch geladen werden?
 function todo() {
+  if (lastVer?.newer) return { kind: 'launcher', label: 'LAUNCHER AKTUALISIEREN' };   // ohne aktuellen Launcher kein Spielstart
   if (!st || st.error) return { kind: 'error' };
   if (!installed() || st.needGame) return { kind: 'install', label: 'SPIEL INSTALLIEREN' };
   if (!baseOk()) return { kind: 'base', label: 'SPIEL AKTUALISIEREN' };
@@ -223,7 +225,8 @@ function todo() {
 function renderPlay() {
   const b = $('play'), td = todo();
   b.disabled = busy;
-  const K = { install: ['play.install', 'SPIEL INSTALLIEREN'], base: ['play.update', 'SPIEL AKTUALISIEREN'], packs: ['play.packs', 'PACK LADEN'], play: ['play.play', 'SPIELEN'], error: ['play.retry', 'NEU VERSUCHEN'] }[td.kind];
+  const K = { install: ['play.install', 'SPIEL INSTALLIEREN'], base: ['play.update', 'SPIEL AKTUALISIEREN'], packs: ['play.packs', 'PACK LADEN'], play: ['play.play', 'SPIELEN'], error: ['play.retry', 'NEU VERSUCHEN'], launcher: ['play.launcher', 'LAUNCHER AKTUALISIEREN'] }[td.kind];
+  b.classList.toggle('upd', td.kind === 'launcher');
   b.textContent = running && td.kind === 'play' ? (runN >= 2 ? 'ZWEI CLIENTS LAUFEN' : 'ZWEITEN CLIENT STARTEN') : t(K[0], K[1]);
   if (running && td.kind === 'play' && runN >= 2) b.disabled = true;
 }
@@ -231,6 +234,7 @@ $('play').onclick = async () => {
   if (busy) return;
   const t = todo();
   try {
+    if (t.kind === 'launcher') { $('banner').click(); return; }
     if (t.kind === 'error') { await refreshStatus(); return; }
     if (t.kind === 'install' || t.kind === 'base') {
       if (!cfg.gameDir) { const d = await api.defaultTarget(); await api.setGame(d); cfg = await api.getConfig(); }
@@ -352,7 +356,7 @@ async function loadServer() {
   const p = await api.players();
   const list = p?.players || [];
   $('plCount').textContent = p ? `(${list.length})` : '';
-  $('plList').innerHTML = p ? (list.length ? list.map((x) => { const k = CLS_ID[x.class]; const c = k ? CLASSES[k] : ['?', '#ccc']; return `<div class="pl"><span class="lv">${x.level}</span><span class="nm" style="color:${c[1]}">${esc(x.name)}</span><span class="muted">${esc(RACE[x.race] || '')} ${esc(c[0])}</span></div>`; }).join('') : '<div class="muted">Gerade ist niemand online.</div>') : '<div class="muted">Liste nicht erreichbar.</div>';
+  $('plList').innerHTML = p ? (list.length ? list.map((x) => { const k = CLS_ID[x.class]; const c = k ? CLASSES[k] : ['?', '#ccc']; return `<div class="pl"><span class="lv">${x.level}</span><span class="nm" style="color:${c[1]}">${esc(x.name)}${x.last ? ' ' + esc(x.last) : ''}</span><span class="muted">${esc(RACE[x.race] || '')} ${esc(c[0])}</span></div>`; }).join('') : '<div class="muted">Gerade ist niemand online.</div>') : '<div class="muted">Liste nicht erreichbar.</div>';
 }
 
 // ---------- Werkzeuge-Reiter ----------
@@ -465,7 +469,7 @@ async function openAcc(name) {
      <div class="form"><label>GM-Level</label><div class="row" style="margin:0"><select id="dGm">${gmOpts}</select><button id="dGmSet" class="primary">Setzen</button></div>
      <label>Webseiten-Rolle</label><div class="row" style="margin:0"><select id="dRole"><option value="player">player</option><option value="moderator">moderator</option>${me >= 4 ? '<option value="admin">admin</option>' : ''}</select><button id="dRoleSet" class="primary">Setzen</button></div></div>
      <div class="row"><button id="dPw">Passwort zurücksetzen</button>${active ? '<button id="dUnban">Entsperren</button>' : '<button id="dBan">Sperren</button>'}${me >= 4 ? '<button id="dDel" style="color:#ff8a80;border-color:#7a2b2b">Account löschen</button>' : ''}</div></div>` : ''}
-   <div class="card"><h3>Charaktere (${i.characters.length})</h3>${i.characters.map((c) => { const cl = clsOf(c.class); return `<div class="li"><div class="t"><b style="color:${cl[1]}">${esc(c.name)}</b> ${c.online ? '<span class="b ok">online</span>' : ''}<div class="muted">Level ${c.level} ${esc(RACE[c.race] || '')} ${esc(cl[0])} · ${c.gold} Gold</div></div><button data-ch="${esc(c.name)}">Verwalten</button></div>`; }).join('') || '<div class="muted">Keine Charaktere.</div>'}</div>
+   <div class="card"><h3>Charaktere (${i.characters.length})</h3>${i.characters.map((c) => { const cl = clsOf(c.class); return `<div class="li"><div class="t"><b style="color:${cl[1]}">${esc(c.name)}${c.last ? ' ' + esc(c.last) : ''}</b> ${c.online ? '<span class="b ok">online</span>' : ''}<div class="muted">Level ${c.level} ${esc(RACE[c.race] || '')} ${esc(cl[0])} · ${c.gold} Gold</div></div><button data-ch="${esc(c.name)}">Verwalten</button></div>`; }).join('') || '<div class="muted">Keine Charaktere.</div>'}</div>
    <div class="card"><h3>Sperr-Verlauf</h3>${i.bans.map((b) => `<div class="li"><div class="t">${esc(ago(b.date))} · ${esc(b.reason || '')}<div class="muted">von ${esc(b.by || '?')} · ${b.permanent ? 'dauerhaft' : ''} ${b.active ? '(aktiv)' : ''}</div></div></div>`).join('') || '<div class="muted">Nie gesperrt.</div>'}</div>
   </div>`;
   $('dBack').onclick = searchAcc;
@@ -487,7 +491,7 @@ async function openAcc(name) {
 
 async function searchChr() {
   const r = await aget('characters', { q: $('chrQ').value, bots: $('chrBots').checked }); if (!r) return;
-  $('chrRes').innerHTML = r.characters.map((c) => { const cl = clsOf(c.class); return `<div class="addon"><div class="t"><div class="n" style="color:${cl[1]}">${esc(c.name)} ${c.online ? '<span class="b ok">online</span>' : ''}</div><div class="d">Level ${c.level} ${esc(RACE[c.race] || '')} ${esc(cl[0])} · ${c.gold} Gold · Account ${esc(c.account)}</div></div><div class="acts"><button data-cm="${esc(c.name)}" class="primary">Verwalten</button><button data-ac="${esc(c.account)}">Account</button></div></div>`; }).join('') || '<div class="empty">Keine Charaktere gefunden.</div>';
+  $('chrRes').innerHTML = r.characters.map((c) => { const cl = clsOf(c.class); return `<div class="addon"><div class="t"><div class="n" style="color:${cl[1]}">${esc(c.name)}${c.last ? ' ' + esc(c.last) : ''} ${c.online ? '<span class="b ok">online</span>' : ''}</div><div class="d">Level ${c.level} ${esc(RACE[c.race] || '')} ${esc(cl[0])} · ${c.gold} Gold · Account ${esc(c.account)}</div></div><div class="acts"><button data-cm="${esc(c.name)}" class="primary">Verwalten</button><button data-ac="${esc(c.account)}">Account</button></div></div>`; }).join('') || '<div class="empty">Keine Charaktere gefunden.</div>';
   $('chrRes').querySelectorAll('[data-cm]').forEach((b) => b.onclick = () => charMenu(b.dataset.cm));
   $('chrRes').querySelectorAll('[data-ac]').forEach((b) => b.onclick = () => openAcc(b.dataset.ac));
 }
