@@ -236,6 +236,23 @@ async function deactivate(gameDir) {
   await writeState(gameDir, st);
 }
 
+// Prüfsummen-Kontrolle für eingehängte Dateien (bis 64 MB, damit der Start schnell bleibt; größere nur per Größe)
+const HASH_LIMIT = 64 * 1024 * 1024;
+function manifestEntry(manifest, id, rel) {
+  const pack = manifest.packs && manifest.packs[id];
+  const key = rel.split(path.sep).join('/').toLowerCase();
+  return pack && pack.files.find((f) => f.path.replace(/\\/g, '/').toLowerCase() === key);
+}
+async function hashMatches(file, entry) {
+  if (!entry || !entry.sha256) return true;
+  try {
+    const st = await fsp.stat(file);
+    if (entry.size && st.size !== entry.size) return false;
+    if (st.size > HASH_LIMIT) return true;
+    return (await sha256(file)) === entry.sha256.toLowerCase();
+  } catch { return false; }
+}
+
 // Gewünschte Packs einhängen (Reihenfolge = Priorität, spätere gewinnen). Leere Liste = Original.
 async function applySet(gameDir, manifest, ids, clearCacheToo, onPhase = () => {}, signal) {
   const st = await readState(gameDir);
@@ -247,6 +264,7 @@ async function applySet(gameDir, manifest, ids, clearCacheToo, onPhase = () => {
       try {
         const a = fs.statSync(path.join(gameDir, safeRel(rel))), b = fs.statSync(path.join(packDir(gameDir, id), safeRel(rel)));
         if (a.size !== b.size || !(a.ino === b.ino || Math.abs(a.mtimeMs - b.mtimeMs) < 2000)) intact = false;
+        else if (!(await hashMatches(path.join(gameDir, safeRel(rel)), manifestEntry(manifest, id, rel)))) intact = false;
       } catch { intact = false; }
     }
   }
@@ -275,6 +293,7 @@ async function applySet(gameDir, manifest, ids, clearCacheToo, onPhase = () => {
       } catch {}
       onPhase(`Pack „${pack.name || id}“ wird eingehängt: ${path.basename(rel)} …`);
       try { await fsp.link(src, dst); } catch { onPhase(`Kopiere ${path.basename(rel)} (dieses Laufwerk kann keine Verknüpfungen, das dauert) …`); await fsp.copyFile(src, dst); try { const t = fs.statSync(src); await fsp.utimes(dst, t.atime, t.mtime); } catch {} }
+      if (!(await hashMatches(dst, f))) { await undo(); throw new Error(`Die Datei „${path.basename(rel)}“ im Spielordner stimmt nach dem Einhängen nicht mit dem Server überein. Bitte unter „Spieldateien“ alles prüfen & reparieren.`); }
       linkedAll[id].push(rel);
       if (signal?.aborted) { await undo(); throw new Error('Abgebrochen'); }
     }
